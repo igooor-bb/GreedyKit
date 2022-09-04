@@ -1,0 +1,14 @@
+disabled_rules:
+  - trailing_whitespace
+  - file_length
+  - type_body_length
+  - function_body_length
+  - function_parameter_count
+opt_in_rules:
+  - empty_count
+  - comment_spacing
+  - force_unwrapping
+excluded:
+  - Pods
+line_length: 120
+
