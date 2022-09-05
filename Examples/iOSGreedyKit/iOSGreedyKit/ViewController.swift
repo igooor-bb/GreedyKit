@@ -49,6 +49,10 @@ class ViewController: UIViewController {
         setupImageView()
         setupToggleView()
         setupLabel()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         addImage()
     }
 
@@ -85,14 +89,14 @@ class ViewController: UIViewController {
     }
 
     private func addImage() {
-        imageView.image = localImage
-        imageView.contentGravity = .resizeAspectFill
+        try? imageView.setImage(localImage)
     }
+}
 
+extension ViewController {
     @objc
     private func toggleViewValueDidChange(_ toggleView: UISwitch) {
         self.label.text = toggleView.isOn ? onLabelText : offLabelText
         self.imageView.preventsCapture = toggleView.isOn
     }
 }
-

@@ -46,10 +46,7 @@ extension CGImage {
             return nil
         }
 
-        let frame = CGRect(
-            origin: .zero,
-            size: CGSize(width: self.width, height: self.height)
-        )
+        let frame = CGRect(origin: .zero, size: CGSize(width: self.width, height: self.height))
         context.clear(frame)
         context.draw(self, in: frame)
 
