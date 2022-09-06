@@ -14,25 +14,13 @@ class ImageViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-
-    private lazy var toggleView: UISwitch = {
-        let toggle = UISwitch()
-        toggle.onTintColor = .magenta
-        toggle.translatesAutoresizingMaskIntoConstraints = false
-        return toggle
-    }()
-
-    private lazy var label: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = self.offLabelText
-        label.textColor = .black
-        return label
-    }()
-
-    private let offLabelText = "Protection is OFF"
-    private let onLabelText = "Protection is ON"
     
+    private lazy var controlsView: ContentControlsView = {
+        let view = ContentControlsView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     private lazy var localImage: UIImage = {
         guard
             let path = Bundle.main.path(forResource: "image", ofType: "jpg"),
@@ -46,9 +34,6 @@ class ImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        setupImageView()
-        setupToggleView()
-        setupLabel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,10 +43,17 @@ class ImageViewController: UIViewController {
 
     private func setupView() {
         view.backgroundColor = .white
+        view.addSubview(imageView)
+        view.addSubview(controlsView)
+        setupLayout()
+    }
+    
+    private func setupLayout() {
+        setupImageView()
+        setupControlsView()
     }
 
     private func setupImageView() {
-        view.addSubview(imageView)
         NSLayoutConstraint.activate([
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             view.trailingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 16),
@@ -70,31 +62,23 @@ class ImageViewController: UIViewController {
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
-
-    private func setupToggleView() {
-        view.addSubview(toggleView)
+    
+    private func setupControlsView() {
+        controlsView.delegate = self
         NSLayoutConstraint.activate([
-            imageView.centerXAnchor.constraint(equalTo: toggleView.centerXAnchor),
-            toggleView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 24)
-        ])
-        toggleView.addTarget(self, action: #selector(toggleViewValueDidChange(_:)), for: .valueChanged)
-    }
-
-    private func setupLabel() {
-        view.addSubview(label)
-        NSLayoutConstraint.activate([
-            toggleView.centerXAnchor.constraint(equalTo: label.centerXAnchor),
-            label.topAnchor.constraint(equalTo: toggleView.bottomAnchor, constant: 12)
+            controlsView.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            controlsView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 16),
+            imageView.trailingAnchor.constraint(equalTo: controlsView.trailingAnchor)
         ])
     }
 
     private func addImage() {
         try? imageView.setImage(localImage)
     }
-    
-    @objc
-    private func toggleViewValueDidChange(_ toggleView: UISwitch) {
-        self.label.text = toggleView.isOn ? onLabelText : offLabelText
-        self.imageView.preventsCapture = toggleView.isOn
+}
+
+extension ImageViewController: ContentControlsDelegate {
+    func didChangeToggleValue(to value: Bool) {
+        self.imageView.preventsCapture = value
     }
 }

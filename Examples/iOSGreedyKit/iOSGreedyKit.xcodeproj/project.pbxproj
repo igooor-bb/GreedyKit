@@ -17,6 +17,7 @@
 		FB2BD35428C69863007D8796 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2BD35328C69863007D8796 /* ImageViewController.swift */; };
 		FB2BD35628C69896007D8796 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2BD35528C69896007D8796 /* VideoViewController.swift */; };
 		FB2BD35728C69B6A007D8796 /* video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = FB2BD35228C6981F007D8796 /* video.mp4 */; };
+		FBF4856428C7F6FB0086B118 /* ContentControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF4856328C7F6FB0086B118 /* ContentControlsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		FB2BD35228C6981F007D8796 /* video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video.mp4; sourceTree = "<group>"; };
 		FB2BD35328C69863007D8796 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		FB2BD35528C69896007D8796 /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
+		FBF4856328C7F6FB0086B118 /* ContentControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentControlsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				FBF4856028C7F5DA0086B118 /* Controllers */,
 				FBF4856128C7F5F00086B118 /* Resources */,
 				FBF4856228C7F6390086B118 /* Storyboards */,
+				FBF4856528C7F7030086B118 /* Views */,
 				FB0597AF28C2AC5A00AAC2CC /* Info.plist */,
 				FB0597A128C2AC5900AAC2CC /* AppDelegate.swift */,
 				FB0597A328C2AC5900AAC2CC /* SceneDelegate.swift */,
@@ -118,6 +121,14 @@
 				FB0597A728C2AC5900AAC2CC /* Main.storyboard */,
 			);
 			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		FBF4856528C7F7030086B118 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FBF4856328C7F6FB0086B118 /* ContentControlsView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,6 +210,7 @@
 			files = (
 				FB0597A228C2AC5900AAC2CC /* AppDelegate.swift in Sources */,
 				FB2BD35428C69863007D8796 /* ImageViewController.swift in Sources */,
+				FBF4856428C7F6FB0086B118 /* ContentControlsView.swift in Sources */,
 				FB2BD35628C69896007D8796 /* VideoViewController.swift in Sources */,
 				FB0597A428C2AC5900AAC2CC /* SceneDelegate.swift in Sources */,
 			);

@@ -17,6 +17,12 @@ final class VideoViewController: UIViewController {
         return view
     }()
     
+    private lazy var controlsView: ContentControlsView = {
+        let view = ContentControlsView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var localVideo: AVAsset = {
         guard let url = Bundle.main.url(forResource: "video", withExtension: "mp4") else {
             fatalError("Test video is missing in the bundle")
@@ -43,11 +49,17 @@ final class VideoViewController: UIViewController {
     
     private func setupView() {
         view.backgroundColor = .white
+        view.addSubview(playerView)
+        view.addSubview(controlsView)
+        setupLayout()
+    }
+    
+    private func setupLayout() {
+        setupPlayerView()
+        setupControlsView()
     }
     
     private func setupPlayerView() {
-        view.addSubview(playerView)
-        
         NSLayoutConstraint.activate([
             playerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             view.trailingAnchor.constraint(equalTo: playerView.trailingAnchor, constant: 16),
@@ -72,9 +84,24 @@ final class VideoViewController: UIViewController {
         player.play()
     }
     
+    private func setupControlsView() {
+        controlsView.delegate = self
+        NSLayoutConstraint.activate([
+            controlsView.leadingAnchor.constraint(equalTo: playerView.leadingAnchor),
+            controlsView.topAnchor.constraint(equalTo: playerView.bottomAnchor, constant: 16),
+            playerView.trailingAnchor.constraint(equalTo: controlsView.trailingAnchor)
+        ])
+    }
+    
     private func addVideo() {
         let playerItem = AVPlayerItem(asset: localVideo)
         player.replaceCurrentItem(with: playerItem)
         player.play()
+    }
+}
+
+extension VideoViewController: ContentControlsDelegate {
+    func didChangeToggleValue(to value: Bool) {
+        playerView.preventsCapture = value
     }
 }
