@@ -8,7 +8,7 @@
 import UIKit
 import GreedyKit
 
-class ImageViewController: UIViewController {
+final class ImageViewController: UIViewController {
     private lazy var imageView: GreedyImageView = {
         let view = GreedyImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
