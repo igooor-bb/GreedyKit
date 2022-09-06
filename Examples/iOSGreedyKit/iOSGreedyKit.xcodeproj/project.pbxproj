@@ -67,16 +67,12 @@
 		FB0597A028C2AC5900AAC2CC /* iOSGreedyKit */ = {
 			isa = PBXGroup;
 			children = (
-				FB0597C228C2B77300AAC2CC /* image.jpg */,
-				FB2BD35228C6981F007D8796 /* video.mp4 */,
+				FBF4856028C7F5DA0086B118 /* Controllers */,
+				FBF4856128C7F5F00086B118 /* Resources */,
+				FBF4856228C7F6390086B118 /* Storyboards */,
 				FB0597AF28C2AC5A00AAC2CC /* Info.plist */,
 				FB0597A128C2AC5900AAC2CC /* AppDelegate.swift */,
-				FB2BD35328C69863007D8796 /* ImageViewController.swift */,
 				FB0597A328C2AC5900AAC2CC /* SceneDelegate.swift */,
-				FB2BD35528C69896007D8796 /* VideoViewController.swift */,
-				FB0597AA28C2AC5A00AAC2CC /* Assets.xcassets */,
-				FB0597AC28C2AC5A00AAC2CC /* LaunchScreen.storyboard */,
-				FB0597A728C2AC5900AAC2CC /* Main.storyboard */,
 			);
 			path = iOSGreedyKit;
 			sourceTree = "<group>";
@@ -94,6 +90,34 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FBF4856028C7F5DA0086B118 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FB2BD35328C69863007D8796 /* ImageViewController.swift */,
+				FB2BD35528C69896007D8796 /* VideoViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		FBF4856128C7F5F00086B118 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FB0597AA28C2AC5A00AAC2CC /* Assets.xcassets */,
+				FB0597C228C2B77300AAC2CC /* image.jpg */,
+				FB2BD35228C6981F007D8796 /* video.mp4 */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		FBF4856228C7F6390086B118 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				FB0597AC28C2AC5A00AAC2CC /* LaunchScreen.storyboard */,
+				FB0597A728C2AC5900AAC2CC /* Main.storyboard */,
+			);
+			path = Storyboards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
