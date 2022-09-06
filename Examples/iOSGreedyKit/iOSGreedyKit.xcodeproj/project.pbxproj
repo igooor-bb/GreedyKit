@@ -9,25 +9,29 @@
 /* Begin PBXBuildFile section */
 		FB0597A228C2AC5900AAC2CC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0597A128C2AC5900AAC2CC /* AppDelegate.swift */; };
 		FB0597A428C2AC5900AAC2CC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0597A328C2AC5900AAC2CC /* SceneDelegate.swift */; };
-		FB0597A628C2AC5900AAC2CC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0597A528C2AC5900AAC2CC /* ViewController.swift */; };
 		FB0597A928C2AC5900AAC2CC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB0597A728C2AC5900AAC2CC /* Main.storyboard */; };
 		FB0597AB28C2AC5A00AAC2CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB0597AA28C2AC5A00AAC2CC /* Assets.xcassets */; };
 		FB0597AE28C2AC5A00AAC2CC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB0597AC28C2AC5A00AAC2CC /* LaunchScreen.storyboard */; };
 		FB0597BD28C2B37700AAC2CC /* GreedyKit in Frameworks */ = {isa = PBXBuildFile; productRef = FB0597BC28C2B37700AAC2CC /* GreedyKit */; };
 		FB0597C328C2B77300AAC2CC /* image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FB0597C228C2B77300AAC2CC /* image.jpg */; };
+		FB2BD35428C69863007D8796 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2BD35328C69863007D8796 /* ImageViewController.swift */; };
+		FB2BD35628C69896007D8796 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2BD35528C69896007D8796 /* VideoViewController.swift */; };
+		FB2BD35728C69B6A007D8796 /* video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = FB2BD35228C6981F007D8796 /* video.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		FB05979E28C2AC5900AAC2CC /* iOSGreedyKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSGreedyKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB0597A128C2AC5900AAC2CC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FB0597A328C2AC5900AAC2CC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		FB0597A528C2AC5900AAC2CC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FB0597A828C2AC5900AAC2CC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FB0597AA28C2AC5A00AAC2CC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FB0597AD28C2AC5A00AAC2CC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FB0597AF28C2AC5A00AAC2CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FB0597BA28C2B36B00AAC2CC /* GreedyKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = GreedyKit; path = ../..; sourceTree = "<group>"; };
 		FB0597C228C2B77300AAC2CC /* image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image.jpg; sourceTree = "<group>"; };
+		FB2BD35228C6981F007D8796 /* video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video.mp4; sourceTree = "<group>"; };
+		FB2BD35328C69863007D8796 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		FB2BD35528C69896007D8796 /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,14 +67,16 @@
 		FB0597A028C2AC5900AAC2CC /* iOSGreedyKit */ = {
 			isa = PBXGroup;
 			children = (
-				FB0597A128C2AC5900AAC2CC /* AppDelegate.swift */,
-				FB0597A328C2AC5900AAC2CC /* SceneDelegate.swift */,
-				FB0597A528C2AC5900AAC2CC /* ViewController.swift */,
 				FB0597C228C2B77300AAC2CC /* image.jpg */,
-				FB0597A728C2AC5900AAC2CC /* Main.storyboard */,
+				FB2BD35228C6981F007D8796 /* video.mp4 */,
+				FB0597AF28C2AC5A00AAC2CC /* Info.plist */,
+				FB0597A128C2AC5900AAC2CC /* AppDelegate.swift */,
+				FB2BD35328C69863007D8796 /* ImageViewController.swift */,
+				FB0597A328C2AC5900AAC2CC /* SceneDelegate.swift */,
+				FB2BD35528C69896007D8796 /* VideoViewController.swift */,
 				FB0597AA28C2AC5A00AAC2CC /* Assets.xcassets */,
 				FB0597AC28C2AC5A00AAC2CC /* LaunchScreen.storyboard */,
-				FB0597AF28C2AC5A00AAC2CC /* Info.plist */,
+				FB0597A728C2AC5900AAC2CC /* Main.storyboard */,
 			);
 			path = iOSGreedyKit;
 			sourceTree = "<group>";
@@ -153,6 +159,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB0597AE28C2AC5A00AAC2CC /* LaunchScreen.storyboard in Resources */,
+				FB2BD35728C69B6A007D8796 /* video.mp4 in Resources */,
 				FB0597C328C2B77300AAC2CC /* image.jpg in Resources */,
 				FB0597AB28C2AC5A00AAC2CC /* Assets.xcassets in Resources */,
 				FB0597A928C2AC5900AAC2CC /* Main.storyboard in Resources */,
@@ -166,8 +173,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FB0597A628C2AC5900AAC2CC /* ViewController.swift in Sources */,
 				FB0597A228C2AC5900AAC2CC /* AppDelegate.swift in Sources */,
+				FB2BD35428C69863007D8796 /* ImageViewController.swift in Sources */,
+				FB2BD35628C69896007D8796 /* VideoViewController.swift in Sources */,
 				FB0597A428C2AC5900AAC2CC /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
