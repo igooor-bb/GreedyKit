@@ -9,7 +9,7 @@ import UIKit
 import CoreImage
 import AVFoundation
 
-public final class GreedyImageView: GreedyUIView {
+public final class GreedyImageView: GreedyMediaView {
     private var context: CIContext?
     private let renderQueue = DispatchQueue(label: "greedykit.queue.image-render-queue")
     

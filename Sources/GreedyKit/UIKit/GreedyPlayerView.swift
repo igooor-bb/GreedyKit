@@ -9,7 +9,7 @@ import UIKit
 import Combine
 import AVFoundation
 
-public final class GreedyPlayerView: GreedyUIView {
+public final class GreedyPlayerView: GreedyMediaView {
     public var player: AVPlayer? {
         didSet {
             addPlayerItemObserver()
@@ -97,7 +97,7 @@ public final class GreedyPlayerView: GreedyUIView {
     }
     
     private func addPlayerItemObserver() {
-        guard let player = player else { return}
+        guard let player = player else { return }
         playerItemObserver = player.publisher(for: \.currentItem)
             .compactMap { $0 }
             .sink { [weak self] playerItem in

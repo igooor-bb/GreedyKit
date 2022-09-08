@@ -1,5 +1,5 @@
 //
-//  GreedyUIView.swift
+//  GreedyMediaView.swift
 //  GreedyKit
 //
 //  Created by Igor Belov on 05.09.2022.
@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-public class GreedyUIView: UIView {
+public class GreedyMediaView: UIView {
     @Proxy(\.renderView.preventsCapture)
     public var preventsCapture: Bool
     
