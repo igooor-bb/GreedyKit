@@ -14,7 +14,7 @@ GreedyKit is a set of ready-to-use components written in Swift for preventing se
 
 ## Motivation
 
-I once had the task of preventing the capture of locally recorded video, however DRM did not work for me for this purpose because [FairPlay](https://developer.apple.com/streaming/fps/) only works with streaming remote content. Luckily for me, I found a suitable tool in AVFoundation, which I had to adapt to my needs and finally put into this little package.
+I once had the task of preventing the capture of locally recorded video, however DRM did not work for me for this purpose because [FairPlay](https://developer.apple.com/streaming/fps/) only works with streaming remote content. Luckily for me, I found a [suitable tool in AVFoundation](https://developer.apple.com/documentation/avfoundation/avsamplebufferdisplaylayer), which I had to adapt to my needs and finally put into this little package.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ After you have installed the package, import it into the project in the usual wa
 import GreedyKit
 ```
 
-The package includes two separate but similar components for displaying images and videos that can change the capture prevention mode.
+The package includes two separate but similar components for displaying **images** and **videos** that can change the capture prevention mode on demand.
 
 ### UIKit
 
