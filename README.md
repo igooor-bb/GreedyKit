@@ -35,6 +35,12 @@ dependencies: [
 
 ## Usage
 
+After you have installed the package, import it into the project in the usual way:
+
+```swift
+import GreedyKit
+```
+
 The package includes two separate but similar components for displaying images and videos that can change the capture prevention mode.
 
 ### UIKit
