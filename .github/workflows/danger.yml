@@ -1,0 +1,21 @@
+name: Danger
+
+on: [pull_request]
+
+concurrency:
+  group: danger-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  danger-lint:
+    name: Danger
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Danger
+        run: |
+          bundle install
+          bundle exec danger
