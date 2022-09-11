@@ -13,7 +13,7 @@ extension UIView {
             self.leadingAnchor.constraint(equalTo: uiView.leadingAnchor),
             self.trailingAnchor.constraint(equalTo: uiView.trailingAnchor),
             self.topAnchor.constraint(equalTo: uiView.topAnchor),
-            self.bottomAnchor.constraint(equalTo: uiView.bottomAnchor),
+            self.bottomAnchor.constraint(equalTo: uiView.bottomAnchor)
         ]
     }
 }
