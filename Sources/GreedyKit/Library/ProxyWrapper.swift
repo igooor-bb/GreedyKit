@@ -16,11 +16,13 @@ public struct AnyProxy<EnclosingSelf, Value> {
         self.keyPath = keyPath
     }
     
+    // swiftlint:disable unused_setter_value
     @available(*, unavailable, message: "The wrapped value must be accessed from the enclosing instance property.")
     public var wrappedValue: Value {
         get { fatalError() }
         set { fatalError() }
     }
+    // swiftlint:enable unused_setter_value
     
     public static subscript(
         _enclosingInstance observed: EnclosingSelf,
