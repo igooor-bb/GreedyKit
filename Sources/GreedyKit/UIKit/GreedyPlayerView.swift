@@ -62,11 +62,8 @@ public final class GreedyPlayerView: GreedyMediaView {
     }
     
     private func initializeDisplayLink() {
-        DispatchQueue.global(qos: .default).async {
-            self.displayLink.add(to: .current, forMode: .common)
-            self.displayLink.isPaused = true
-            RunLoop.current.run()
-        }
+        self.displayLink.add(to: .current, forMode: .common)
+        self.displayLink.isPaused = true
     }
     
     @objc
