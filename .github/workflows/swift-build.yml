@@ -11,9 +11,6 @@ jobs:
     strategy:
       matrix:
         ios:
-          - version: '13.7'
-            device: 'iPhone 11'
-            xcode: '11.7'
           - version: '14.5'
             device: 'iPhone 12 Pro'
             xcode: '12.5.1'
