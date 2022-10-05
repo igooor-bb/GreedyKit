@@ -1,0 +1,27 @@
+name: Build Swift Package
+
+on: 
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-old: 
+    runs-on: macos-11 
+    steps: 
+    - name: Checkout the code
+      uses: actions/checkout@v2
+    - name: Build (iOS 13.7)
+      run: xcodebuild build -scheme GreedyKit -destination 'platform=iOS Simulator,OS=13.7,name=iPhone 11'
+    - name: Build (iOS 14.5)
+      run: xcodebuild build -scheme GreedyKit -destination 'platform=iOS Simulator,OS=14.5,name=iPhone 12 Pro'
+  build-new: 
+    runs-on: macos-12
+    steps: 
+    - name: Checkout the code
+      uses: actions/checkout@v2
+    - name: Build (iOS 15.5)
+      run: xcodebuild build -scheme GreedyKit -destination 'platform=iOS Simulator,OS=15.5,name=iPhone 13 Pro'
+    - name: Build (iOS 16.0)
+      run: xcodebuild build -scheme GreedyKit -destination 'platform=iOS Simulator,OS=16.0,name=iPhone 14'
