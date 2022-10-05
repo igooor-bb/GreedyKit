@@ -39,7 +39,7 @@ jobs:
             device: 'iPhone 14'
             xcode: '14.0.1'
       fail-fast: false
-    runs-on: macos-11 
+    runs-on: macos-12
     steps: 
     - name: Checkout the code
       uses: actions/checkout@v2
