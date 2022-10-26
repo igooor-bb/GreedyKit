@@ -39,21 +39,21 @@ public final class GreedyImageView: GreedyMediaView {
 }
 
 extension GreedyImageView {
-    public func setImage(_ cgImage: CGImage) throws {
+    public func setImage(_ cgImage: CGImage) {
         guard let buffer = cgImage.sampleBuffer else {
             return
         }
         renderView.enqueueBuffer(buffer)
     }
     
-    public func setImage(_ uiImage: UIImage) throws {
+    public func setImage(_ uiImage: UIImage) {
         guard let cgImage = uiImage.cgImage else {
             return
         }
         try setImage(cgImage)
     }
     
-    public func setImage(_ ciImage: CIImage) throws {
+    public func setImage(_ ciImage: CIImage) {
         guard let cgImage = context?.createCGImage(ciImage, from: ciImage.extent) else {
             return
         }
