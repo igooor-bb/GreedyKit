@@ -30,6 +30,9 @@ public final class GreedyPlayerView: GreedyMediaView {
         selector: #selector(displayLinkDidRefresh(link:))
     )
     
+    // Used for testing only.
+    internal var onDeinit: (() -> Void)?
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         configureContext()
@@ -48,6 +51,10 @@ public final class GreedyPlayerView: GreedyMediaView {
         if newSuperview == nil {
             dismantle()
         }
+    }
+    
+    deinit {
+        onDeinit?()
     }
     
     private func configureContext() {
