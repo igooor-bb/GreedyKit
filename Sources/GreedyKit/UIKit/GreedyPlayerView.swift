@@ -81,9 +81,9 @@ public final class GreedyPlayerView: GreedyMediaView {
     
     @objc
     private func displayLinkDidRefresh(link: CADisplayLink) {
-        guard let player else { return }
+        guard let player = self.player else { return }
         renderQueue.async { [weak self] in
-            guard let self else { return }
+            guard let self = self else { return }
             let itemTime = player.currentTime()
             autoreleasepool {
                 if self.videoOutput.hasNewPixelBuffer(forItemTime: itemTime) {
