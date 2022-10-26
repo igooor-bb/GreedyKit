@@ -13,6 +13,6 @@ jobs:
     steps:
       - uses: rymndhng/release-on-push-action@master
         with:
-          bump_version_scheme: minor
+          bump_version_scheme: patch
           tag_prefix: ""
           release_name: "Release <RELEASE_VERSION>"
