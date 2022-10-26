@@ -73,7 +73,7 @@ final class ImageViewController: UIViewController {
     }
 
     private func addImage() {
-        try? imageView.setImage(localImage)
+        imageView.setImage(localImage)
     }
 }
 
