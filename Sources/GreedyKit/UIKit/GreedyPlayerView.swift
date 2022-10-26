@@ -39,9 +39,15 @@ public final class GreedyPlayerView: GreedyMediaView {
         super.init(coder: coder)
     }
     
-    internal func dismantle() {
+    private func dismantle() {
         displayLink.invalidate()
         playerItemObserver?.cancel()
+    }
+    
+    public override func willMove(toSuperview newSuperview: UIView?) {
+        if newSuperview == nil {
+            dismantle()
+        }
     }
     
     private func configureContext() {

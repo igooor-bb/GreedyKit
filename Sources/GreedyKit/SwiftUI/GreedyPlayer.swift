@@ -32,8 +32,4 @@ public struct GreedyPlayer: UIViewRepresentable {
         uiView.preventsCapture = preventsCapture
         uiView.contentGravity = contentGravity
     }
-    
-    public static func dismantleUIView(_ uiView: GreedyPlayerView, coordinator: ()) {
-        uiView.dismantle()
-    }
 }
