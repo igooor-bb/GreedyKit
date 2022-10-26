@@ -16,7 +16,7 @@ struct ContentView: View {
                     ImageContentView()
                 }
                 NavigationLink("Video") {
-                    EmptyView()
+                    VideoContentView()
                 }
             }
         }

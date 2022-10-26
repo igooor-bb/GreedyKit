@@ -36,10 +36,10 @@ public final class GreedyPlayerView: GreedyMediaView {
     }
     
     public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
     }
     
-    deinit {
+    internal func dismantle() {
         displayLink.invalidate()
         playerItemObserver?.cancel()
     }
@@ -68,28 +68,29 @@ public final class GreedyPlayerView: GreedyMediaView {
     
     @objc
     private func displayLinkDidRefresh(link: CADisplayLink) {
-        guard let player = player else { return }
-        let itemTime = player.currentTime()
-        if videoOutput.hasNewPixelBuffer(forItemTime: itemTime) {
-            var presentationItemTime: CMTime = .zero
-            if let pixelBuffer = videoOutput.copyPixelBuffer(
-                forItemTime: itemTime,
-                itemTimeForDisplay: &presentationItemTime
-            ) {
-                createSampleBuffer(from: pixelBuffer)
+        guard let player else { return }
+        renderQueue.async { [weak self] in
+            guard let self else { return }
+            let itemTime = player.currentTime()
+            autoreleasepool {
+                if self.videoOutput.hasNewPixelBuffer(forItemTime: itemTime) {
+                    var presentationItemTime: CMTime = .zero
+                    if let pixelBuffer = self.videoOutput.copyPixelBuffer(
+                        forItemTime: itemTime,
+                        itemTimeForDisplay: &presentationItemTime
+                    ) {
+                        self.createSampleBuffer(from: pixelBuffer)
+                    }
+                }
             }
         }
     }
     
     private func createSampleBuffer(from pixelBuffer: CVPixelBuffer) {
-        autoreleasepool {
-            renderQueue.async {
-                let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-                if let cgImage = self.context?.createCGImage(ciImage, from: ciImage.extent),
-                   let buffer = cgImage.sampleBuffer {
-                    self.renderView.enqueueBuffer(buffer)
-                }
-            }
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        if let cgImage = self.context?.createCGImage(ciImage, from: ciImage.extent),
+           let buffer = cgImage.sampleBuffer {
+            self.renderView.enqueueBuffer(buffer)
         }
     }
     

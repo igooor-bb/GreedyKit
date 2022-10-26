@@ -46,12 +46,12 @@ extension GreedyImageView {
     
     public func setImage(_ uiImage: UIImage) {
         guard let cgImage = uiImage.cgImage else { return }
-        try setImage(cgImage)
+        setImage(cgImage)
     }
     
     public func setImage(_ ciImage: CIImage) {
         guard let cgImage = context?.createCGImage(ciImage, from: ciImage.extent) else { return }
-        try setImage(cgImage)
+        setImage(cgImage)
     }
     
     public func removeImage() {

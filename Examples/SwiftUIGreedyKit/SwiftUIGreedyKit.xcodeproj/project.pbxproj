@@ -14,6 +14,8 @@
 		FBBFADF628CE2DA100A63060 /* image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FBBFADF528CE2DA100A63060 /* image.jpg */; };
 		FBBFADF928CE304C00A63060 /* GreedyKit in Frameworks */ = {isa = PBXBuildFile; productRef = FBBFADF828CE304C00A63060 /* GreedyKit */; };
 		FBBFADFC28CE30B100A63060 /* ImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBBFADFB28CE30B100A63060 /* ImageContentView.swift */; };
+		FBBFADFE28CE778600A63060 /* VideoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBBFADFD28CE778600A63060 /* VideoContentView.swift */; };
+		FBBFAE0028CE794D00A63060 /* video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = FBBFADFF28CE794D00A63060 /* video.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +27,8 @@
 		FBBFADEF28CE25EA00A63060 /* GreedyKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = GreedyKit; path = ../..; sourceTree = "<group>"; };
 		FBBFADF528CE2DA100A63060 /* image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image.jpg; sourceTree = "<group>"; };
 		FBBFADFB28CE30B100A63060 /* ImageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageContentView.swift; sourceTree = "<group>"; };
+		FBBFADFD28CE778600A63060 /* VideoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoContentView.swift; sourceTree = "<group>"; };
+		FBBFADFF28CE794D00A63060 /* video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +92,7 @@
 		FBBFADF228CE2CE500A63060 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FBBFADFF28CE794D00A63060 /* video.mp4 */,
 				FBBFADF528CE2DA100A63060 /* image.jpg */,
 				FBBFADE428CE25C700A63060 /* Assets.xcassets */,
 			);
@@ -105,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				FBBFADFB28CE30B100A63060 /* ImageContentView.swift */,
+				FBBFADFD28CE778600A63060 /* VideoContentView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -174,6 +180,7 @@
 				FBBFADE828CE25C700A63060 /* Preview Assets.xcassets in Resources */,
 				FBBFADE528CE25C700A63060 /* Assets.xcassets in Resources */,
 				FBBFADF628CE2DA100A63060 /* image.jpg in Resources */,
+				FBBFAE0028CE794D00A63060 /* video.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,6 +193,7 @@
 			files = (
 				FBBFADE328CE25C600A63060 /* ContentView.swift in Sources */,
 				FBBFADE128CE25C600A63060 /* SwiftUIGreedyKitApp.swift in Sources */,
+				FBBFADFE28CE778600A63060 /* VideoContentView.swift in Sources */,
 				FBBFADFC28CE30B100A63060 /* ImageContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -322,6 +330,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUIGreedyKit/Preview Content\"";
+				DEVELOPMENT_TEAM = KW4RF6MB9T;
 				ENABLE_PREVIEWS = YES;
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
@@ -351,6 +360,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUIGreedyKit/Preview Content\"";
+				DEVELOPMENT_TEAM = KW4RF6MB9T;
 				ENABLE_PREVIEWS = YES;
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;

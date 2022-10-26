@@ -15,8 +15,8 @@ private enum SourceType {
 }
 
 public struct GreedyImage: UIViewRepresentable {
-    private var preventsCapture: Bool
-    private var contentGravity: AVLayerVideoGravity
+    private let preventsCapture: Bool
+    private let contentGravity: AVLayerVideoGravity
     private let source: SourceType
     
     private init(
