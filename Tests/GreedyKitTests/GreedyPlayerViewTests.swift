@@ -1,6 +1,7 @@
 import XCTest
 @testable import GreedyKit
 
+
 final class GreedyPlayerViewTests: XCTestCase {
     func testPlayerViewDeinitIsCalled_WhenIsOrphan() throws {
         let semaphore = DispatchSemaphore(value: 0)
