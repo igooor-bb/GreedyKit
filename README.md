@@ -2,13 +2,21 @@
 
 GreedyKit is a set of ready-to-use components written in Swift for preventing sensitive media data to be exposed by screen capture tools in iOS.
 
+## Contents
+
 - [GreedyKit](#greedykit)
+  - [Contents](#contents)
   - [Motivation](#motivation)
   - [Requirements](#requirements)
   - [Installation](#installation)
     - [Swift Package Manager](#swift-package-manager)
   - [Usage](#usage)
     - [UIKit](#uikit)
+      - [GreedyImageView](#greedyimageview)
+      - [GreedyPlayerView](#greedyplayerview)
+    - [SwiftUI](#swiftui)
+      - [GreedyImage](#greedyimage)
+      - [GreedyPlayer](#greedyplayer)
   - [Contribution](#contribution)
   - [License](#license)
 
@@ -33,6 +41,13 @@ dependencies: [
 ]
 ```
 
+Alternatively, you can use Swift Package Manager to install GreedyKit using Xcode:
+
+1. Open your project in Xcode
+2. Open "File" -> "Add Packages..."
+3. Paste the repository URL: <https://github.com/igooor-bb/GreedyKit>
+4. Click "Next" a couple of times and finish adding
+
 ## Usage
 
 After you have installed the package, import it into the project in the usual way:
@@ -45,7 +60,9 @@ The package includes two separate but similar components for displaying **images
 
 ### UIKit
 
-To add an **image** in UIKit that can be hidden, you have to use the `GreedyImageView` type:
+#### GreedyImageView
+
+To add an image in UIKit that can be hidden, you have to use the `GreedyImageView` wrapper around your image:
 
 ```swift
 // Create image view similar to the regular UIView.
@@ -61,7 +78,9 @@ imageView.setImage(image)
 imageView.preventsCapture = true
 ```
 
-To add a **video** in UIKit that can be hidden, you have to use the `GreedyPlayerView` type. It is used as a wrapper around `AVPlayer`:
+#### GreedyPlayerView
+
+To add a video in UIKit that can be hidden, you can use the `GreedyPlayerView` wrapper around your `AVPlayer`:
 
 ```swift
 // Create a wrapper around AVPlayer
@@ -79,6 +98,32 @@ playerView.preventsCapture = true
 ```
 
 You can find an example of how to use it in the [Examples/iOSGreedyKit](Examples/iOSGreedyKit/) project.
+
+### SwiftUI
+
+GreedyKit also contains several wrappers around UIKit classes that you can use in SwiftUI.
+
+#### GreedyImage
+
+The image is very simple. You just need to create a `GreedyImage` element with any kind of image (UIImage, CIImage or CGImage) within your view hierarchy:
+
+```swift
+VStack {
+  GreedyImage(uiImage, preventsCapture: true)
+}
+```
+
+#### GreedyPlayer
+
+Creating a video player is also easy. You just need to create a `GreedyPlayer` element within your view hierarchy and pass an `AVPlayer` to it, whose content it will draw:
+
+```swift
+VStack {
+  GreedyPlayer(player: avPlayer, preventsCapture: true)
+}
+```
+
+You can find an example of how to use it in the [Examples/SwiftUIGreedyKit](Examples/SwiftUIGreedyKit/) project.
 
 ## Contribution
 
