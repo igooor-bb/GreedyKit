@@ -8,14 +8,10 @@ concurrency:
 
 jobs:
   danger-lint:
-    name: Danger
-    if: github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: macos-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Danger
-        run: |
-          bundle install
-          bundle exec danger
+        uses: docker://ghcr.io/danger/danger-swift-with-swiftlint:3.12.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
