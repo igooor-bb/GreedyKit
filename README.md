@@ -10,6 +10,7 @@ GreedyKit is a set of ready-to-use components written in Swift for preventing se
   - [Requirements](#requirements)
   - [Installation](#installation)
     - [Swift Package Manager](#swift-package-manager)
+    - [CocoaPods](#cocoapods)
   - [Usage](#usage)
     - [UIKit](#uikit)
       - [GreedyImageView](#greedyimageview)
@@ -33,20 +34,28 @@ I once had the task of preventing the capture of locally recorded video, however
 
 ### Swift Package Manager
 
-One way to install GreedyKit is the Swift Package Manager (SPM). To do this, simply add a dependency to your `Package.swift` file:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/igooor-bb/GreedyKit.git", from: "0.1.0")
-]
-```
-
-Alternatively, you can use Swift Package Manager to install GreedyKit using Xcode:
+You can use Swift Package Manager to install GreedyKit using Xcode:
 
 1. Open your project in Xcode
 2. Open "File" -> "Add Packages..."
 3. Paste the repository URL: <https://github.com/igooor-bb/GreedyKit>
 4. Click "Next" a couple of times and finish adding
+
+### CocoaPods
+
+You can use [CocoaPods](http://cocoapods.org/) to install `GreedyKit` by adding following lines to your `Podfile`:
+
+```ruby
+target 'ApplicationName' do
+    pod 'GreedyKit'
+end
+```
+
+Then just write the command in the terminal to install:
+
+```bash
+pod install
+```
 
 ## Usage
 
@@ -62,7 +71,7 @@ The package includes two separate but similar components for displaying **images
 
 #### GreedyImageView
 
-To add an image in UIKit that can be hidden, you have to use the `GreedyImageView` wrapper around your image:
+To add an image in UIKit that can be hidden, you can use the `GreedyImageView` wrapper around your image:
 
 ```swift
 // Create image view similar to the regular UIView.
@@ -109,7 +118,7 @@ The image is very simple. You just need to create a `GreedyImage` element with a
 
 ```swift
 VStack {
-  GreedyImage(uiImage, preventsCapture: true)
+    GreedyImage(uiImage, preventsCapture: true)
 }
 ```
 
@@ -119,7 +128,7 @@ Creating a video player is also easy. You just need to create a `GreedyPlayer` e
 
 ```swift
 VStack {
-  GreedyPlayer(player: avPlayer, preventsCapture: true)
+    GreedyPlayer(player: avPlayer, preventsCapture: true)
 }
 ```
 
