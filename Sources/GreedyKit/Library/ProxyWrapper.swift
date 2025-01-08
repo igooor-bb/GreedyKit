@@ -11,11 +11,11 @@ import Foundation
 @propertyWrapper
 public struct AnyProxy<EnclosingSelf, Value> {
     private let keyPath: ReferenceWritableKeyPath<EnclosingSelf, Value>
-    
+
     public init(_ keyPath: ReferenceWritableKeyPath<EnclosingSelf, Value>) {
         self.keyPath = keyPath
     }
-    
+
     // swiftlint:disable unused_setter_value
     @available(*, unavailable, message: "The wrapped value must be accessed from the enclosing instance property.")
     public var wrappedValue: Value {
@@ -23,7 +23,7 @@ public struct AnyProxy<EnclosingSelf, Value> {
         set { fatalError() }
     }
     // swiftlint:enable unused_setter_value
-    
+
     public static subscript(
         _enclosingInstance observed: EnclosingSelf,
         wrapped wrappedKeyPath: ReferenceWritableKeyPath<EnclosingSelf, Value>,

@@ -18,7 +18,7 @@ public struct GreedyImage: UIViewRepresentable {
     private let preventsCapture: Bool
     private let contentGravity: AVLayerVideoGravity
     private let source: SourceType
-    
+
     private init(
         source: SourceType,
         preventsCapture: Bool,
@@ -28,7 +28,7 @@ public struct GreedyImage: UIViewRepresentable {
         self.preventsCapture = preventsCapture
         self.contentGravity = contentGravity
     }
-    
+
     public init(
         _ image: UIImage,
         preventsCapture: Bool,
@@ -40,7 +40,7 @@ public struct GreedyImage: UIViewRepresentable {
             contentGravity: contentGravity
         )
     }
-    
+
     public init(
         _ image: CGImage,
         preventsCapture: Bool,
@@ -52,7 +52,7 @@ public struct GreedyImage: UIViewRepresentable {
             contentGravity: contentGravity
         )
     }
-    
+
     public init(
         _ image: CIImage,
         preventsCapture: Bool,
@@ -64,7 +64,7 @@ public struct GreedyImage: UIViewRepresentable {
             contentGravity: contentGravity
         )
     }
-    
+
     public func makeUIView(context: Context) -> GreedyImageView {
         let view = GreedyImageView()
         switch source {
@@ -77,7 +77,7 @@ public struct GreedyImage: UIViewRepresentable {
         }
         return view
     }
-    
+
     public func updateUIView(_ uiView: GreedyImageView, context: Context) {
         uiView.preventsCapture = preventsCapture
         uiView.contentGravity = contentGravity

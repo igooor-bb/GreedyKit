@@ -8,6 +8,8 @@
 import UIKit
 
 protocol ContentControlsDelegate: AnyObject {
+
+    @MainActor
     func didChangeToggleValue(to value: Bool)
 }
 
@@ -17,10 +19,10 @@ class ContentControlsView: UIView {
         toggle.translatesAutoresizingMaskIntoConstraints = false
         return toggle
     }()
-    
+
     private let offLabelText = "Protection is OFF"
     private let onLabelText = "Protection is ON"
-    
+
     private lazy var label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -28,31 +30,31 @@ class ContentControlsView: UIView {
         label.textColor = .black
         return label
     }()
-    
+
     weak var delegate: ContentControlsDelegate?
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()
     }
-    
+
     private func setupView() {
         backgroundColor = .clear
         addSubview(toggleView)
         addSubview(label)
         setupLayout()
     }
-    
+
     private func setupLayout() {
         setupToggleView()
         setupLabel()
     }
-    
+
     private func setupToggleView() {
         NSLayoutConstraint.activate([
             toggleView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -61,7 +63,7 @@ class ContentControlsView: UIView {
         ])
         toggleView.addTarget(self, action: #selector(toggleViewValueDidChange(_:)), for: .valueChanged)
     }
-    
+
     private func setupLabel() {
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: toggleView.trailingAnchor, constant: 16),
@@ -69,7 +71,7 @@ class ContentControlsView: UIView {
             self.trailingAnchor.constraint(greaterThanOrEqualTo: label.trailingAnchor)
         ])
     }
-    
+
     @objc
     private func toggleViewValueDidChange(_ toggleView: UISwitch) {
         self.label.text = toggleView.isOn ? onLabelText : offLabelText

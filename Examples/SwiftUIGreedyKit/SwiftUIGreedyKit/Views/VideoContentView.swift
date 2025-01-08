@@ -16,16 +16,16 @@ struct VideoContentView: View {
         }
         return AVAsset(url: url)
     }()
-    
+
     @State private var preventsCapture: Bool = false
     private let player: AVPlayer
     private let playerItem: AVPlayerItem
-    
+
     init() {
         self.playerItem = AVPlayerItem(asset: localVideo)
         self.player = AVPlayer()
     }
-    
+
     var body: some View {
         VStack {
             GreedyPlayer(player: player, preventsCapture: preventsCapture)
