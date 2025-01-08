@@ -38,10 +38,6 @@ final class VideoViewController: UIViewController {
         setupPlayerView()
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         addVideo()

@@ -8,8 +8,8 @@ final class GreedyPlayerViewTests: XCTestCase {
         let semaphore = DispatchSemaphore(value: 0)
 
         autoreleasepool {
-            let playerView: GreedyPlayerView? = GreedyPlayerView()
-            playerView!.onDeinit = {
+            let playerView = GreedyPlayerView()
+            playerView.onDeinit = {
                 semaphore.signal()
             }
         }
@@ -24,13 +24,13 @@ final class GreedyPlayerViewTests: XCTestCase {
 
         let uiView = UIView()
         autoreleasepool {
-            let playerView: GreedyPlayerView? = GreedyPlayerView()
-            playerView!.onDeinit = {
+            let playerView = GreedyPlayerView()
+            playerView.onDeinit = {
                 semaphore.signal()
             }
 
-            uiView.addSubview(playerView!)
-            playerView?.removeFromSuperview()
+            uiView.addSubview(playerView)
+            playerView.removeFromSuperview()
         }
 
         let result = semaphore.wait(timeout: .now() + .seconds(5))

@@ -19,3 +19,4 @@ opt_in_rules:
   - force_unwrapping
 
 line_length: 120
+warning_threshold: 3
