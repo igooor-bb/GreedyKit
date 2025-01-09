@@ -10,7 +10,7 @@ import GreedyKit
 
 struct ImageContentView: View {
     @State private var preventsCapture: Bool = false
-    
+
     private let localImage: UIImage = {
         guard
             let path = Bundle.main.path(forResource: "image", ofType: "jpg"),
@@ -20,7 +20,7 @@ struct ImageContentView: View {
         }
         return image
     }()
-    
+
     var body: some View {
         VStack {
             GreedyImage(localImage, preventsCapture: preventsCapture)

@@ -8,7 +8,6 @@ excluded:
   - Pods
 
 disabled_rules:
-  - trailing_whitespace
   - file_length
   - type_body_length
   - function_body_length
@@ -20,3 +19,4 @@ opt_in_rules:
   - force_unwrapping
 
 line_length: 120
+warning_threshold: 3

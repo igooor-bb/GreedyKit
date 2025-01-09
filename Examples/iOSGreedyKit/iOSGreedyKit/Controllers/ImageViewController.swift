@@ -14,7 +14,7 @@ final class ImageViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
     private lazy var controlsView: ContentControlsView = {
         let view = ContentControlsView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -35,7 +35,7 @@ final class ImageViewController: UIViewController {
         super.viewDidLoad()
         setupView()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         addImage()
@@ -47,7 +47,7 @@ final class ImageViewController: UIViewController {
         view.addSubview(controlsView)
         setupLayout()
     }
-    
+
     private func setupLayout() {
         setupImageView()
         setupControlsView()
@@ -62,7 +62,7 @@ final class ImageViewController: UIViewController {
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
-    
+
     private func setupControlsView() {
         controlsView.delegate = self
         NSLayoutConstraint.activate([

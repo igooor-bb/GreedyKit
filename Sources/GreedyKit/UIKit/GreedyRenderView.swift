@@ -25,17 +25,15 @@ final class GreedyRenderView: UIView {
 
     @Proxy(\.layer.videoGravity)
     var contentGravity: AVLayerVideoGravity
-    
+
+    @MainActor
     func enqueueBuffer(_ buffer: CMSampleBuffer) {
-        DispatchQueue.mainAsyncOrNow {
-            self.layer.flush()
-            self.layer.enqueue(buffer)
-        }
+        layer.flush()
+        layer.enqueue(buffer)
     }
 
+    @MainActor
     func clearLayer() {
-        DispatchQueue.mainAsyncOrNow {
-            self.layer.flushAndRemoveImage()
-        }
+        layer.flushAndRemoveImage()
     }
 }
