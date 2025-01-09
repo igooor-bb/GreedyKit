@@ -1,4 +1,4 @@
-name: Build Swift Package
+name: Build and Test Swift Package
 
 on: 
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-new:
+  build:
     strategy:
       matrix:
         ios:
@@ -23,5 +23,5 @@ jobs:
       uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: '${{ matrix.ios.xcode }}'
-    - name: Build (iOS ${{ matrix.ios.version }})
-      run: xcodebuild build -scheme GreedyKit -destination 'platform=iOS Simulator,OS=${{ matrix.ios.version }},name=${{ matrix.ios.device }}'
+    - name: Build and Test (iOS ${{ matrix.ios.version }})
+      run: xcodebuild build -scheme GreedyKit -destination 'platform=iOS Simulator,OS=${{ matrix.ios.version }},name=${{ matrix.ios.device }}' test | xcbeautify
