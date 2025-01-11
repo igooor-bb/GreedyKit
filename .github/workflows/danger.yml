@@ -1,6 +1,17 @@
 name: Danger
 
-on: [pull_request]
+on: 
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+      - 'Sources/**'
+      - 'Examples/**'
+      - 'Tests/**'
+      - 'Dangerfile.swift'
+      - 'Package.swift'
+      - '.swiftlint.yml'
 
 concurrency:
   group: danger-${{ github.head_ref }}

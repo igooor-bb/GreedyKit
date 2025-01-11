@@ -2,14 +2,13 @@ name: CocoaPods
 
 on:
   push:
-    branches:
-      - main
     tags:
       - '*'
 
 jobs:
   build:
-    runs-on: macos-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v3
         with:
@@ -19,6 +18,10 @@ jobs:
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         with:
           fallback: 0.1.0
+      - name: Switch Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.2.0'
       - name: Deploy to CocoaPods
         run: |
           set -eo pipefail
