@@ -9,23 +9,44 @@ import AVFoundation
 import Combine
 import UIKit
 
+/// A view that renders the visual output of an `AVPlayer` while optionally
+/// hiding that output from screenshots and screen recordings.
+///
+/// Use `GreedyPlayerView` to present sensitive video content that must
+/// remain invisible in captured media.
+///
+/// The default configuration plays the video normally.
 public final class GreedyPlayerView: UIView {
 
-    // MARK: Public
+    // MARK: - Public API
 
+    /// The player whose media is displayed by the view.
+    ///
+    /// ```swift
+    /// playerView.player = AVPlayer(url: videoURL)
+    /// ```
+    ///
+    /// Assigning a new player replaces any previously set player.
     public var player: AVPlayer? {
         didSet { addPlayerItemObserver() }
     }
 
+    /// Indicates whether the view should hide its contents
+    /// from screenshots and screen recordings.
+    ///
+    /// The default value is `false`.
     public var preventsCapture: Bool = false {
         didSet { renderView.preventsCapture = preventsCapture }
     }
 
-    public var contentGravity: AVLayerVideoGravity = .resizeAspect {
-        didSet { renderView.contentGravity = contentGravity }
+    /// Defines how the image is rendered within the view’s bounds.
+    ///
+    /// The default value is `.fit`.
+    public var contentGravity: ContentGravity = .fit {
+        didSet { renderView.contentGravity = contentGravity.avValue }
     }
 
-    // MARK: Properties
+    // MARK: - Properties
 
     private lazy var renderer = VideoRenderActor(debugName: "GreedyPlayerView")
 
@@ -37,7 +58,7 @@ public final class GreedyPlayerView: UIView {
         selector: #selector(displayLinkDidRefresh(link:))
     )
 
-    // MARK: Lifecycle
+    // MARK: - Lifecycle
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -59,7 +80,7 @@ public final class GreedyPlayerView: UIView {
         initializeDisplayLink()
     }
 
-    // MARK: Rendering
+    // MARK: - Private Methods
 
     private func dismantle() {
         displayLink.invalidate()

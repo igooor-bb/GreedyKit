@@ -12,7 +12,7 @@ import UIKit
 final class VideoViewController: UIViewController {
     private lazy var playerView: GreedyPlayerView = {
         let view = GreedyPlayerView()
-        view.contentGravity = .resizeAspectFill
+        view.contentGravity = .fill
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

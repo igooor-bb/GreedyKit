@@ -8,73 +8,52 @@
 import AVFoundation
 import SwiftUI
 
-private enum SourceType {
-    case uiImage(UIImage)
-    case cgImage(CGImage)
-    case ciImage(CIImage)
-}
-
+/// A SwiftUI view that renders an image while optionally preventing it
+/// from appearing in system screenshots and screen recordings.
+///
+/// Use `GreedyImage` wherever you would use `Image`, but require additional
+/// control over capture protection or content scaling.
+///
+/// ```swift
+/// GreedyImage(
+///     photo,
+///     preventsCapture: true,
+///     contentGravity: .fill
+/// )
+/// .frame(width: 200, height: 200)
+/// ```
 public struct GreedyImage: UIViewRepresentable {
+    
+    // MARK: - Properties
+    
+    private let image: UIImage
     private let preventsCapture: Bool
-    private let contentGravity: AVLayerVideoGravity
-    private let source: SourceType
+    private let contentGravity: ContentGravity
 
-    private init(
-        source: SourceType,
-        preventsCapture: Bool,
-        contentGravity: AVLayerVideoGravity
-    ) {
-        self.source = source
-        self.preventsCapture = preventsCapture
-        self.contentGravity = contentGravity
-    }
+    // MARK: - Public API
 
+    /// Creates a GreedyImage view.
+    ///
+    /// - Parameters:
+    ///   - image: The `UIImage` to display.
+    ///   - preventsCapture: Indicates whether the view should hide its contents
+    ///   from screenshots and screen recordings.
+    ///   - contentGravity: Defines how the image is rendered within the view’s bounds.
     public init(
         _ image: UIImage,
-        preventsCapture: Bool,
-        contentGravity: AVLayerVideoGravity = .resizeAspect
+        preventsCapture: Bool = false,
+        contentGravity: ContentGravity = .fit
     ) {
-        self.init(
-            source: .uiImage(image),
-            preventsCapture: preventsCapture,
-            contentGravity: contentGravity
-        )
+        self.preventsCapture = preventsCapture
+        self.contentGravity = contentGravity
+        self.image = image
     }
-
-    public init(
-        _ image: CGImage,
-        preventsCapture: Bool,
-        contentGravity: AVLayerVideoGravity = .resizeAspect
-    ) {
-        self.init(
-            source: .cgImage(image),
-            preventsCapture: preventsCapture,
-            contentGravity: contentGravity
-        )
-    }
-
-    public init(
-        _ image: CIImage,
-        preventsCapture: Bool,
-        contentGravity: AVLayerVideoGravity = .resizeAspect
-    ) {
-        self.init(
-            source: .ciImage(image),
-            preventsCapture: preventsCapture,
-            contentGravity: contentGravity
-        )
-    }
+    
+    // MARK: - Requirements
 
     public func makeUIView(context: Context) -> GreedyImageView {
         let view = GreedyImageView()
-        switch source {
-        case .uiImage(let uiImage):
-            view.setImage(uiImage)
-        case .cgImage(let cgImage):
-            view.setImage(cgImage)
-        case .ciImage(let ciImage):
-            view.setImage(ciImage)
-        }
+        view.image = image
         return view
     }
 

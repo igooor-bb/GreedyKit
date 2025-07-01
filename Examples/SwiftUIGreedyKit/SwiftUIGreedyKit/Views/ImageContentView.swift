@@ -23,8 +23,12 @@ struct ImageContentView: View {
 
     var body: some View {
         VStack {
-            GreedyImage(localImage, preventsCapture: preventsCapture)
-                .frame(height: 400)
+            GreedyImage(
+                localImage,
+                preventsCapture: preventsCapture
+            )
+            .frame(height: 400)
+
             Toggle(isOn: $preventsCapture) {
                 Text("Protection is " + (preventsCapture ? "ON" : "OFF"))
             }

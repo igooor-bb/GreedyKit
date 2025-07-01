@@ -9,29 +9,57 @@ import AVFoundation
 import CoreImage
 import UIKit
 
+/// A view that displays an image and can optionally prevent it from
+/// appearing in system screenshots and screen recordings.
+///
+/// Use `GreedyImageView` when presenting sensitive visual content that
+/// should remain hidden in captured media.
+///
+/// The default configuration shows the image normally.
 public final class GreedyImageView: UIView {
 
-    // MARK: Public
+    // MARK: - Public API
+    
+    /// The image rendered by the view.
+    ///
+    /// Assigning a new value replaces any previous image.
+    /// Set this property to `nil` to clear the current content.
+    public var image: UIImage? {
+        didSet {
+            if let image {
+                setImage(image)
+            } else {
+                removeImage()
+            }
+        }
+    }
 
+    /// Indicates whether the view should hide its contents
+    /// from screenshots and screen recordings.
+    ///
+    /// The default value is `false`.
     public var preventsCapture: Bool = false {
         didSet { renderView.preventsCapture = preventsCapture }
     }
-
-    public var contentGravity: AVLayerVideoGravity = .resizeAspect {
-        didSet { renderView.contentGravity = contentGravity }
+    
+    /// Defines how the image is rendered within the view’s bounds.
+    ///
+    /// The default value is `.fit`.
+    public var contentGravity: ContentGravity = .fit {
+        didSet { renderView.contentGravity = contentGravity.avValue }
     }
 
-    // MARK: Properties
+    // MARK: - Properties
 
     private let renderView = BackedRenderView()
-    private lazy var sampleBufferFactory = SampleBufferFactory()
 
+    private lazy var sampleBufferFactory = SampleBufferFactory()
     private lazy var renderer = CoreGraphicsRenderer(
         debugName: "GreedyImageView",
         cacheIntermediates: true
     )
 
-    // MARK: Lifecycle
+    // MARK: - Lifecycle
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -42,15 +70,9 @@ public final class GreedyImageView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: Interface
-
-    public func setImage(_ cgImage: CGImage) {
-        Task {
-            await enqueueBuffer(from: cgImage)
-        }
-    }
-
-    public func setImage(_ uiImage: UIImage) {
+    // MARK: - Private Methods
+    
+    private func setImage(_ uiImage: UIImage) {
         Task {
             if let cgImage = uiImage.cgImage {
                 await enqueueBuffer(from: cgImage)
@@ -58,21 +80,11 @@ public final class GreedyImageView: UIView {
         }
     }
 
-    public func setImage(_ ciImage: CIImage) {
-        Task {
-            if let cgImage = await renderer.cgImage(from: ciImage) {
-                await enqueueBuffer(from: cgImage)
-            }
-        }
-    }
-
-    public func removeImage() {
+    private func removeImage() {
         Task {
             await renderView.clearLayer()
         }
     }
-
-    // MARK: Helpers
 
     private func enqueueBuffer(from cgImage: CGImage) async {
         guard let buffer = await sampleBufferFactory.sampleBuffer(

@@ -28,7 +28,11 @@ struct VideoContentView: View {
 
     var body: some View {
         VStack {
-            GreedyPlayer(player: player, preventsCapture: preventsCapture)
+            GreedyPlayer(
+                player,
+                preventsCapture: preventsCapture
+            )
+
             Toggle(isOn: $preventsCapture) {
                 Text("Protection is " + (preventsCapture ? "ON" : "OFF"))
             }
