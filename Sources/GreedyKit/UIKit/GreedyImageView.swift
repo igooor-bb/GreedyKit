@@ -5,60 +5,82 @@
 //  Created by Igor Belov on 05.09.2022.
 //
 
-import UIKit
-import CoreImage
 import AVFoundation
+import CoreImage
+import UIKit
 
-public final class GreedyImageView: GreedyMediaView {
-    private var context: CIContext?
-    private let renderQueue = DispatchQueue(label: "greedykit.queue.image-render-queue")
+public final class GreedyImageView: UIView {
+
+    // MARK: Public
+
+    public var preventsCapture: Bool = false {
+        didSet { renderView.preventsCapture = preventsCapture }
+    }
+
+    public var contentGravity: AVLayerVideoGravity = .resizeAspect {
+        didSet { renderView.contentGravity = contentGravity }
+    }
+
+    // MARK: Properties
+
+    private let renderView = BackedRenderView()
+    private lazy var sampleBufferFactory = SampleBufferFactory()
+
+    private lazy var renderer = CoreGraphicsRenderer(
+        debugName: "GreedyImageView",
+        cacheIntermediates: true
+    )
+
+    // MARK: Lifecycle
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        configureContext()
+        renderView.configure(in: self)
     }
 
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    private func configureContext() {
-        guard let device = MTLCreateSystemDefaultDevice() else {
+    // MARK: Interface
+
+    public func setImage(_ cgImage: CGImage) {
+        Task {
+            await enqueueBuffer(from: cgImage)
+        }
+    }
+
+    public func setImage(_ uiImage: UIImage) {
+        Task {
+            if let cgImage = uiImage.cgImage {
+                await enqueueBuffer(from: cgImage)
+            }
+        }
+    }
+
+    public func setImage(_ ciImage: CIImage) {
+        Task {
+            if let cgImage = await renderer.cgImage(from: ciImage) {
+                await enqueueBuffer(from: cgImage)
+            }
+        }
+    }
+
+    public func removeImage() {
+        Task {
+            await renderView.clearLayer()
+        }
+    }
+
+    // MARK: Helpers
+
+    private func enqueueBuffer(from cgImage: CGImage) async {
+        guard let buffer = await sampleBufferFactory.sampleBuffer(
+            fromCGImage: cgImage,
+            presentationTimeStamp: .zero
+        ) else {
             return
         }
-        self.context = CIContext(
-            mtlDevice: device,
-            options: [
-                .name: "GreedyImageViewContext",
-                .cacheIntermediates: true,
-                .useSoftwareRenderer: false,
-                .priorityRequestLow: false
-            ]
-        )
-    }
-}
-
-extension GreedyImageView {
-    @MainActor
-    public func setImage(_ cgImage: CGImage) {
-        guard let buffer = cgImage.sampleBuffer else { return }
-        renderView.enqueueBuffer(buffer)
-    }
-
-    @MainActor
-    public func setImage(_ uiImage: UIImage) {
-        guard let cgImage = uiImage.cgImage else { return }
-        setImage(cgImage)
-    }
-
-    @MainActor
-    public func setImage(_ ciImage: CIImage) {
-        guard let cgImage = context?.createCGImage(ciImage, from: ciImage.extent) else { return }
-        setImage(cgImage)
-    }
-
-    @MainActor
-    public func removeImage() {
-        renderView.clearLayer()
+        await renderView.enqueueBuffer(buffer)
     }
 }

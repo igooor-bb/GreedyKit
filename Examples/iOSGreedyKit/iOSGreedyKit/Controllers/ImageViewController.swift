@@ -5,8 +5,8 @@
 //  Created by Igor Belov on 03.09.2022.
 //
 
-import UIKit
 import GreedyKit
+import UIKit
 
 final class ImageViewController: UIViewController {
     private lazy var imageView: GreedyImageView = {

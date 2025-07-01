@@ -5,9 +5,9 @@
 //  Created by Igor Belov on 11.09.2022.
 //
 
-import SwiftUI
 import AVFoundation
 import GreedyKit
+import SwiftUI
 
 struct VideoContentView: View {
     private var localVideo: AVAsset = {

@@ -5,9 +5,9 @@
 //  Created by Igor Belov on 05.09.2022.
 //
 
-import UIKit
 import AVFoundation
 import GreedyKit
+import UIKit
 
 final class VideoViewController: UIViewController {
     private lazy var playerView: GreedyPlayerView = {

@@ -5,8 +5,8 @@
 //  Created by Igor Belov on 11.09.2022.
 //
 
-import SwiftUI
 import GreedyKit
+import SwiftUI
 
 struct ImageContentView: View {
     @State private var preventsCapture: Bool = false

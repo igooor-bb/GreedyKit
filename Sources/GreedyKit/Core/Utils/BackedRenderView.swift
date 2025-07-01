@@ -1,14 +1,17 @@
 //
-//  GreedyRenderView.swift
+//  BackedRenderView.swift
 //  GreedyKit
 //
 //  Created by Igor Belov on 03.09.2022.
 //
 
-import UIKit
 import AVFoundation
+import UIKit
 
-final class GreedyRenderView: UIView {
+final class BackedRenderView: UIView {
+
+    // MARK: Layers
+
     override class var layerClass: AnyClass {
         AVSampleBufferDisplayLayer.self
     }
@@ -20,20 +23,24 @@ final class GreedyRenderView: UIView {
         return layer
     }
 
-    @Proxy(\.layer.preventsCapture)
-    var preventsCapture: Bool
+    // MARK: Properties
 
-    @Proxy(\.layer.videoGravity)
-    var contentGravity: AVLayerVideoGravity
+    var preventsCapture: Bool = false {
+        didSet { layer.preventsCapture = preventsCapture }
+    }
 
-    @MainActor
-    func enqueueBuffer(_ buffer: CMSampleBuffer) {
+    var contentGravity: AVLayerVideoGravity = .resizeAspect {
+        didSet { layer.videoGravity = contentGravity }
+    }
+
+    // MARK: Interface
+
+    func enqueueBuffer(_ buffer: CMSampleBuffer) async {
         layer.flush()
         layer.enqueue(buffer)
     }
 
-    @MainActor
-    func clearLayer() {
+    func clearLayer() async {
         layer.flushAndRemoveImage()
     }
 }
