@@ -19,7 +19,7 @@ import UIKit
 public final class GreedyImageView: UIView {
 
     // MARK: - Public API
-    
+
     /// The image rendered by the view.
     ///
     /// Assigning a new value replaces any previous image.
@@ -41,7 +41,7 @@ public final class GreedyImageView: UIView {
     public var preventsCapture: Bool = false {
         didSet { renderView.preventsCapture = preventsCapture }
     }
-    
+
     /// Defines how the image is rendered within the view’s bounds.
     ///
     /// The default value is `.fit`.
@@ -71,7 +71,7 @@ public final class GreedyImageView: UIView {
     }
 
     // MARK: - Private Methods
-    
+
     private func setImage(_ uiImage: UIImage) {
         Task {
             if let cgImage = uiImage.cgImage {

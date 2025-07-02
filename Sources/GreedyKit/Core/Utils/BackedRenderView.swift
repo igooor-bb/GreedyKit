@@ -9,13 +9,13 @@ import AVFoundation
 import UIKit
 
 final class BackedRenderView: UIView {
-    
+
     // MARK: - Internal API
-    
+
     var preventsCapture: Bool = false {
         didSet { layer.preventsCapture = preventsCapture }
     }
-    
+
     var contentGravity: AVLayerVideoGravity = .resizeAspect {
         didSet { layer.videoGravity = contentGravity }
     }
@@ -32,7 +32,7 @@ final class BackedRenderView: UIView {
         }
         return layer
     }
-    
+
     @available(iOS 17.0, *)
     private var renderer: AVSampleBufferVideoRenderer {
         layer.sampleBufferRenderer

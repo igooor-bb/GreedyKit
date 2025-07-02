@@ -23,9 +23,9 @@ import SwiftUI
 /// .frame(width: 200, height: 200)
 /// ```
 public struct GreedyImage: UIViewRepresentable {
-    
+
     // MARK: - Properties
-    
+
     private let image: UIImage
     private let preventsCapture: Bool
     private let contentGravity: ContentGravity
@@ -48,7 +48,7 @@ public struct GreedyImage: UIViewRepresentable {
         self.contentGravity = contentGravity
         self.image = image
     }
-    
+
     // MARK: - Requirements
 
     public func makeUIView(context: Context) -> GreedyImageView {

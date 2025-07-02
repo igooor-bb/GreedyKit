@@ -23,14 +23,14 @@ import SwiftUI
 /// .frame(height: 240)
 /// ```
 public struct GreedyPlayer: UIViewRepresentable {
-    
-    // MARK: -  Properties
-    
+
+    // MARK: - Properties
+
     private let player: AVPlayer
     private let preventsCapture: Bool
     private let contentGravity: ContentGravity
 
-    // MARK: -  Public API
+    // MARK: - Public API
 
     /// Creates a GreedyPlayer view.
     ///
@@ -48,7 +48,7 @@ public struct GreedyPlayer: UIViewRepresentable {
         self.preventsCapture = preventsCapture
         self.contentGravity = contentGravity
     }
-    
+
     // MARK: - Requirements
 
     public func makeUIView(context: Context) -> GreedyPlayerView {
