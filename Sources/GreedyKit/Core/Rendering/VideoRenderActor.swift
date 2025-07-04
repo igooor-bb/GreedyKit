@@ -9,17 +9,15 @@ import AVFoundation
 import CoreImage
 
 final actor VideoRenderActor {
-    private let sampleBufferFactory: SampleBufferFactory
-    private let videoOutput: AVPlayerItemVideoOutput
 
-    init(debugName: String) {
-        self.sampleBufferFactory = SampleBufferFactory()
-        videoOutput = AVPlayerItemVideoOutput(
-            pixelBufferAttributes: [
-                kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
-            ]
-        )
-    }
+    private lazy var sampleBufferFactory = SampleBufferFactory()
+    private lazy var videoOutput = AVPlayerItemVideoOutput(
+        pixelBufferAttributes: [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
+        ]
+    )
+
+    init() {}
 
     func attach(to item: AVPlayerItem) async {
         await MainActor.run { [videoOutput] in

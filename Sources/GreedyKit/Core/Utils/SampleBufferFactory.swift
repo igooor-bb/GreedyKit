@@ -15,11 +15,12 @@ final actor SampleBufferFactory {
     // MARK: Constants
 
     private static let pixelFormat = kCVPixelFormatType_32BGRA
-    private static let bitmapInfo = CGBitmapInfo.byteOrder32Little.rawValue | CGImageAlphaInfo.premultipliedFirst.rawValue
+    private static let bitmapInfo = CGBitmapInfo.byteOrder32Little.rawValue
+                                  | CGImageAlphaInfo.premultipliedFirst.rawValue
 
     // MARK: Properties
 
-    private var pixelBufferPool: CVPixelBufferPool
+    private var pixelBufferPool: CVPixelBufferPool?
     private let context: CIContext
 
     private var poolGeometry: BufferPoolGeometry
@@ -34,10 +35,12 @@ final actor SampleBufferFactory {
         self.poolGeometry = BufferPoolGeometry(width: maxWidth, height: maxHeight)
         self.pixelBufferPool = Self.makePool(geometry: poolGeometry, minBuffers: minPoolBuffers)
 
-        let device = MTLCreateSystemDefaultDevice()!
+        guard let device = MTLCreateSystemDefaultDevice() else {
+            fatalError("GPU is unavailable on this device")
+        }
         self.context = CIContext(
             mtlDevice: device,
-            options: [.name: "ImageSampleBufferFactory"]
+            options: [.name: "SampleBufferFactory"]
         )
     }
 
@@ -72,6 +75,10 @@ final actor SampleBufferFactory {
         duration: CMTime = .invalid
     ) -> CMSampleBuffer? {
         resizePoolIfNeeded(width: cgImage.width, height: cgImage.height)
+        guard let pixelBufferPool else {
+            return nil
+        }
+
         var pixelBuffer: CVPixelBuffer?
         let status = CVPixelBufferPoolCreatePixelBuffer(
             nil,
@@ -117,7 +124,7 @@ final actor SampleBufferFactory {
     private static func makePool(
         geometry: BufferPoolGeometry,
         minBuffers: Int
-    ) -> CVPixelBufferPool {
+    ) -> CVPixelBufferPool? {
         let pixelAttributes: [String: Any] = [
             kCVPixelBufferPixelFormatTypeKey as String: pixelFormat,
             kCVPixelBufferWidthKey as String: geometry.width,
@@ -136,7 +143,7 @@ final actor SampleBufferFactory {
             pixelAttributes as CFDictionary,
             &pool
         )
-        return pool!
+        return pool
     }
 }
 

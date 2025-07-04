@@ -48,7 +48,7 @@ public final class GreedyPlayerView: UIView {
 
     // MARK: - Properties
 
-    private lazy var renderer = VideoRenderActor(debugName: "GreedyPlayerView")
+    private lazy var renderer = VideoRenderActor()
 
     private let renderView = BackedRenderView()
     private var playerItemObserver: AnyCancellable?

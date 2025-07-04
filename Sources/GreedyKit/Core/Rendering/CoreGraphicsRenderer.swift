@@ -17,7 +17,10 @@ final actor CoreGraphicsRenderer {
         useSoftwareRenderer: Bool = false,
         priorityRequestLow: Bool = false
     ) {
-        let device = MTLCreateSystemDefaultDevice()!
+        guard let device = MTLCreateSystemDefaultDevice() else {
+            fatalError("GPU is unavailable on this device")
+        }
+
         context = CIContext(
             mtlDevice: device,
             options: [
