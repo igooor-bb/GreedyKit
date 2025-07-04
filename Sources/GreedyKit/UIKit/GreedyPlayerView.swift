@@ -5,48 +5,68 @@
 //  Created by Igor Belov on 05.09.2022.
 //
 
-import UIKit
-import Combine
 import AVFoundation
+import Combine
+import UIKit
 
-public final class GreedyPlayerView: GreedyMediaView {
+/// A view that renders the visual output of an `AVPlayer` while optionally
+/// hiding that output from screenshots and screen recordings.
+///
+/// Use `GreedyPlayerView` to present sensitive video content that must
+/// remain invisible in captured media.
+///
+/// The default configuration plays the video normally.
+public final class GreedyPlayerView: UIView {
 
+    // MARK: - Public API
+
+    /// The player whose media is displayed by the view.
+    ///
+    /// ```swift
+    /// playerView.player = AVPlayer(url: videoURL)
+    /// ```
+    ///
+    /// Assigning a new player replaces any previously set player.
     public var player: AVPlayer? {
-        didSet {
-            addPlayerItemObserver()
-        }
+        didSet { addPlayerItemObserver() }
     }
 
-    private var playerItemObserver: AnyCancellable?
-    nonisolated(unsafe) private var context: CIContext?
+    /// Indicates whether the view should hide its contents
+    /// from screenshots and screen recordings.
+    ///
+    /// The default value is `false`.
+    public var preventsCapture: Bool = false {
+        didSet { renderView.preventsCapture = preventsCapture }
+    }
 
-    nonisolated private lazy var videoOutput: AVPlayerItemVideoOutput = {
-        let settings = [String(kCVPixelBufferPixelFormatTypeKey): kCVPixelFormatType_32BGRA]
-        return AVPlayerItemVideoOutput(pixelBufferAttributes: settings)
-    }()
+    /// Defines how the image is rendered within the view’s bounds.
+    ///
+    /// The default value is `.fit`.
+    public var contentGravity: ContentGravity = .fit {
+        didSet { renderView.contentGravity = contentGravity.avValue }
+    }
+
+    // MARK: - Properties
+
+    private lazy var renderer = VideoRenderActor()
+
+    private let renderView = BackedRenderView()
+    private var playerItemObserver: AnyCancellable?
 
     private lazy var displayLink = CADisplayLink(
         target: self,
         selector: #selector(displayLinkDidRefresh(link:))
     )
 
-    private let renderQueue = DispatchQueue(label: "greedykit.queue.video-render-queue")
-
-    // Used for testing only.
-    nonisolated(unsafe) var onDeinit: (() -> Void)?
+    // MARK: - Lifecycle
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        configureContext()
+        renderView.configure(in: self)
     }
 
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-
-    private func dismantle() {
-        displayLink.invalidate()
-        playerItemObserver?.cancel()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     public override func willMove(toSuperview newSuperview: UIView?) {
@@ -55,26 +75,16 @@ public final class GreedyPlayerView: GreedyMediaView {
         }
     }
 
-    deinit {
-        onDeinit?()
-    }
-
-    private func configureContext() {
-        guard let device = MTLCreateSystemDefaultDevice() else { return }
-        self.context = CIContext(
-            mtlDevice: device,
-            options: [
-                .name: "GreedyPlayerViewContext",
-                .cacheIntermediates: false,
-                .useSoftwareRenderer: false,
-                .priorityRequestLow: false
-            ]
-        )
-    }
-
     public override func didMoveToSuperview() {
         super.didMoveToSuperview()
         initializeDisplayLink()
+    }
+
+    // MARK: - Private Methods
+
+    private func dismantle() {
+        displayLink.invalidate()
+        playerItemObserver?.cancel()
     }
 
     private func initializeDisplayLink() {
@@ -82,35 +92,14 @@ public final class GreedyPlayerView: GreedyMediaView {
         displayLink.isPaused = true
     }
 
-    @objc func displayLinkDidRefresh(link: CADisplayLink) {
+    @objc private func displayLinkDidRefresh(link: CADisplayLink) {
         guard let player else { return }
+        let itemTime = player.currentTime()
 
-        renderQueue.async { [weak self] in
-            guard let self = self else { return }
-            let itemTime = player.currentTime()
-
-            autoreleasepool {
-                if videoOutput.hasNewPixelBuffer(forItemTime: itemTime) {
-                    var presentationItemTime: CMTime = .zero
-
-                    if let pixelBuffer = videoOutput.copyPixelBuffer(
-                        forItemTime: itemTime,
-                        itemTimeForDisplay: &presentationItemTime
-                    ) {
-                        self.createSampleBuffer(from: pixelBuffer)
-                    }
-                }
-            }
-        }
-    }
-
-    nonisolated private func createSampleBuffer(from pixelBuffer: CVPixelBuffer) {
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        if let cgImage = self.context?.createCGImage(ciImage, from: ciImage.extent),
-           let buffer = cgImage.sampleBuffer {
-
-            DispatchQueue.main.async {
-                self.renderView.enqueueBuffer(buffer)
+        Task { [weak self] in
+            guard let self else { return }
+            if let buffer = await renderer.frame(at: itemTime) {
+                await renderView.enqueueBuffer(buffer)
             }
         }
     }
@@ -120,10 +109,12 @@ public final class GreedyPlayerView: GreedyMediaView {
 
         playerItemObserver = player.publisher(for: \.currentItem)
             .compactMap { $0 }
-            .sink { [weak self] playerItem in
-                guard let self = self else { return }
-                playerItem.add(self.videoOutput)
-                self.displayLink.isPaused = false
+            .sink { [weak self] item in
+                guard let self else { return }
+                Task {
+                    await self.renderer.attach(to: item)
+                    self.displayLink.isPaused = false
+                }
             }
     }
 }

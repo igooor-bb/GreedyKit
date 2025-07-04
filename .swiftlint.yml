@@ -17,6 +17,7 @@ opt_in_rules:
   - empty_count
   - comment_spacing
   - force_unwrapping
+  - sorted_imports
 
 line_length: 120
 warning_threshold: 3

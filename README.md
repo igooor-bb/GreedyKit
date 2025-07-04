@@ -1,60 +1,52 @@
 # GreedyKit
 
-GreedyKit is a set of ready-to-use components written in Swift for preventing sensitive media data to be exposed by screen capture tools in iOS.
+GreedyKit is a set of ready-to-use UIKit and SwiftUI components to prevent sensitive media data, such as images or videos, from being exposed by screen capture tools on iOS.
 
 ## Contents
 
-- [GreedyKit](#greedykit)
-  - [Contents](#contents)
-  - [Motivation](#motivation)
-  - [Requirements](#requirements)
-  - [Installation](#installation)
-    - [Swift Package Manager](#swift-package-manager)
-    - [CocoaPods](#cocoapods)
-  - [Usage](#usage)
-    - [UIKit](#uikit)
-      - [GreedyImageView](#greedyimageview)
-      - [GreedyPlayerView](#greedyplayerview)
-    - [SwiftUI](#swiftui)
-      - [GreedyImage](#greedyimage)
-      - [GreedyPlayer](#greedyplayer)
-  - [Contribution](#contribution)
-  - [License](#license)
+- [Contents](#contents)
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [Installation](#installation)
+  - [Swift Package Manager](#swift-package-manager)
+    - [Xcode](#xcode)
+    - [Package manifest](#package-manifest)
+- [Usage](#usage)
+  - [Image](#image)
+  - [Video](#video)
+- [Contribution](#contribution)
+- [License](#license)
 
 ## Motivation
 
-I once had the task of preventing the capture of locally recorded video, however DRM did not work for me for this purpose because [FairPlay](https://developer.apple.com/streaming/fps/) only works with streaming remote content. Luckily for me, I found a [suitable tool in AVFoundation](https://developer.apple.com/documentation/avfoundation/avsamplebufferdisplaylayer), which I had to adapt to my needs and finally put into this little package.
+While building a video player for one of the enterprise projects, I needed a way to prevent users from taking screenshots or recording what was on the screen. [Apple’s FairPlay DRM](https://developer.apple.com/streaming/fps/) secures streamed media only, so I turned to [AVSampleBufferDisplayLayer](https://developer.apple.com/documentation/avfoundation/avsamplebufferdisplaylayer), which natively supports what I needed.
+
+GreedyKit packages this technique, allowing you to protect media with a single property toggle without DRM servers or certificates.
 
 ## Requirements
 
 - iOS/iPadOS 13.0 and later
-- Xcode 11.0 and later
+- Xcode 16.0 and later
 
 ## Installation
 
 ### Swift Package Manager
+
+#### Xcode
 
 You can use Swift Package Manager to install GreedyKit using Xcode:
 
 1. Open your project in Xcode
 2. Open "File" -> "Add Packages..."
 3. Paste the repository URL: <https://github.com/igooor-bb/GreedyKit>
-4. Click "Next" a couple of times and finish adding
+4. Click "Next" a couple of times and finish the process
 
-### CocoaPods
+#### Package manifest
 
-You can use [CocoaPods](http://cocoapods.org/) to install `GreedyKit` by adding following lines to your `Podfile`:
+Alternatively, add the dependency to your `Package.swift`:
 
-```ruby
-target 'ApplicationName' do
-    pod 'GreedyKit'
-end
-```
-
-Then just write the command in the terminal to install:
-
-```bash
-pod install
+```swift
+.package(url: "https://github.com/igooor-bb/GreedyKit", from: "<version>")
 ```
 
 ## Usage
@@ -65,56 +57,23 @@ After you have installed the package, import it into the project in the usual wa
 import GreedyKit
 ```
 
-The package includes two separate but similar components for displaying **images** and **videos** that can change the capture prevention mode on demand.
+The package includes components for displaying images and videos that can change the capture mode on demand.
 
-### UIKit
+You can find an example of how to use them in [Examples/GreedyKitExample](Examples/GreedyKitExample/).
 
-#### GreedyImageView
+### Image
 
-To add an image in UIKit that can be hidden, you can use the `GreedyImageView` wrapper around your image:
+In UIKit, you can use the `GreedyImageView` wrapper around your `UIImage` similar to regular `UIImageView`:
 
 ```swift
-// Create image view similar to the regular UIView.
 let imageView = GreedyImageView()
-parentView.addSubbiew(imageView)
+imageView.image = UIImage(named: "SecretImage")
 
-// Add content to the created view.
-// You can use either UIImage, CGImage or CIImage.
-let image = UIImage(named: "SecretImage")
-imageView.setImage(image)
-
-// When necessary, turn on the flag to prevent the content from being captured.
+// Block capture at any time:
 imageView.preventsCapture = true
 ```
 
-#### GreedyPlayerView
-
-To add a video in UIKit that can be hidden, you can use the `GreedyPlayerView` wrapper around your `AVPlayer`:
-
-```swift
-// Create a wrapper around AVPlayer
-let player = AVPlayer()
-let playerView = GreedyPlayerView()
-playerView.player = player
-
-// Add some content to the player and manipulate it as you wish:
-let playerItem = AVPlayerItem(asset: localVideo)
-player.replaceCurrentItem(with: playerItem)
-player.play()
-
-// When necessary, turn on the flag to prevent the content from being captured.
-playerView.preventsCapture = true
-```
-
-You can find an example of how to use it in the [Examples/iOSGreedyKit](Examples/iOSGreedyKit/) project.
-
-### SwiftUI
-
-GreedyKit also contains several wrappers around UIKit classes that you can use in SwiftUI.
-
-#### GreedyImage
-
-The image is very simple. You just need to create a `GreedyImage` element with any kind of image (UIImage, CIImage or CGImage) within your view hierarchy:
+In SwiftUI, you can simply use `GreedyImage` compononent with your `UIImage` inside:
 
 ```swift
 VStack {
@@ -122,17 +81,29 @@ VStack {
 }
 ```
 
-#### GreedyPlayer
+### Video
 
-Creating a video player is also easy. You just need to create a `GreedyPlayer` element within your view hierarchy and pass an `AVPlayer` to it, whose content it will draw:
+In UIKit, you can use the `GreedyPlayerView` wrapper around your `AVPlayer`:
+
+```swift
+let player = AVPlayer(url: videoURL)
+let playerView = GreedyPlayerView()
+playerView.player = player
+
+// Start playback:
+player.play()
+
+// Block capture at any time:
+playerView.preventsCapture = true
+```
+
+In SwiftUI, you just need to create a `GreedyPlayer` within your view hierarchy and pass an `AVPlayer`, whose content it will draw:
 
 ```swift
 VStack {
     GreedyPlayer(player: avPlayer, preventsCapture: true)
 }
 ```
-
-You can find an example of how to use it in the [Examples/SwiftUIGreedyKit](Examples/SwiftUIGreedyKit/) project.
 
 ## Contribution
 
@@ -148,4 +119,4 @@ To contribute, use the follow "fork-and-pull" git workflow:
 
 ## License
 
-GreedyKit is available under the MIT license. See the LICENSE file for more info.
+**GreedyKit** is available under the MIT license. See the LICENSE file for more info.
