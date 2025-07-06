@@ -8,7 +8,7 @@
 import AVFoundation
 import UIKit
 
-final class BackedRenderView: UIView {
+final class BackedRenderView: UIView, RenderViewProtocol {
 
     // MARK: - Internal API
 

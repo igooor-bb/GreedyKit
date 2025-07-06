@@ -48,51 +48,75 @@ public final class GreedyPlayerView: UIView {
 
     // MARK: - Properties
 
-    private lazy var renderer = VideoRenderActor()
+    typealias DisplayLinkFactory = (
+        _ target: Any,
+        _ selector: Selector
+    ) -> DisplayLinkProtocol
 
-    private let renderView = BackedRenderView()
+    private var displayLink: DisplayLinkProtocol?
+    private let renderer: VideoRendererProtocol
+    private let renderView: RenderViewProtocol
+
+    private let displayLinkFactory: DisplayLinkFactory
     private var playerItemObserver: AnyCancellable?
-
-    private lazy var displayLink = CADisplayLink(
-        target: self,
-        selector: #selector(displayLinkDidRefresh(link:))
-    )
 
     // MARK: - Lifecycle
 
-    public override init(frame: CGRect) {
+    init(
+        frame: CGRect = .zero,
+        renderer: VideoRendererProtocol,
+        renderView: RenderViewProtocol,
+        displayLinkFactory: @escaping DisplayLinkFactory
+    ) {
+        self.renderer = renderer
+        self.renderView = renderView
+        self.displayLinkFactory = displayLinkFactory
         super.init(frame: frame)
+
         renderView.configure(in: self)
+    }
+
+    public override convenience init(frame: CGRect) {
+        self.init(
+            frame: frame,
+            renderer: VideoRenderer(),
+            renderView: BackedRenderView(),
+            displayLinkFactory: { target, selector in
+                CADisplayLink(target: target, selector: selector)
+            }
+        )
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func willMove(toSuperview newSuperview: UIView?) {
-        if newSuperview == nil {
-            dismantle()
-        }
-    }
+    public override func didMoveToWindow() {
+        super.didMoveToWindow()
 
-    public override func didMoveToSuperview() {
-        super.didMoveToSuperview()
-        initializeDisplayLink()
+        if window == nil {
+            pauseRendering()
+        } else {
+            resumeRendering()
+        }
     }
 
     // MARK: - Private Methods
 
-    private func dismantle() {
-        displayLink.invalidate()
-        playerItemObserver?.cancel()
+    private func resumeRendering() {
+        if displayLink == nil {
+            displayLink = displayLinkFactory(self, #selector(displayLinkDidRefresh))
+            displayLink?.add(to: .current, forMode: .common)
+        }
+        displayLink?.isPaused = (player?.currentItem == nil)
     }
 
-    private func initializeDisplayLink() {
-        displayLink.add(to: .current, forMode: .common)
-        displayLink.isPaused = true
+    private func pauseRendering() {
+        displayLink?.invalidate()
+        displayLink = nil
     }
 
-    @objc private func displayLinkDidRefresh(link: CADisplayLink) {
+    @objc private func displayLinkDidRefresh() {
         guard let player else { return }
         let itemTime = player.currentTime()
 
@@ -104,17 +128,24 @@ public final class GreedyPlayerView: UIView {
         }
     }
 
+    private func attachAndResumeIfNeeded(_ item: AVPlayerItem) async {
+        await renderer.attach(to: item)
+        if window != nil {
+            displayLink?.isPaused = false
+        }
+    }
+
     private func addPlayerItemObserver() {
-        guard let player else { return }
+        guard let player else {
+            displayLink?.isPaused = true
+            return
+        }
 
         playerItemObserver = player.publisher(for: \.currentItem)
             .compactMap { $0 }
             .sink { [weak self] item in
                 guard let self else { return }
-                Task {
-                    await self.renderer.attach(to: item)
-                    self.displayLink.isPaused = false
-                }
+                Task { await attachAndResumeIfNeeded(item) }
             }
     }
 }

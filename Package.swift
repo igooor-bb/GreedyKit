@@ -22,7 +22,10 @@ let package = Package(
         ),
         .testTarget(
             name: "GreedyKitTests",
-            dependencies: ["GreedyKit"]
+            dependencies: ["GreedyKit"],
+            resources: [
+                .process("Resources")
+            ]
         )
     ]
 )
