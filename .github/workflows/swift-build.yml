@@ -32,4 +32,6 @@ jobs:
       with:
         xcode-version: '${{ matrix.ios.xcode }}'
     - name: Build and Test (iOS ${{ matrix.ios.version }})
-      run: xcodebuild build -scheme GreedyKit -destination 'platform=iOS Simulator,OS=${{ matrix.ios.version }},name=${{ matrix.ios.device }}' test | xcbeautify
+      run: |
+        set -o pipefail
+        xcodebuild build -scheme GreedyKit -destination 'platform=iOS Simulator,OS=${{ matrix.ios.version }},name=${{ matrix.ios.device }}' test | xcbeautify
