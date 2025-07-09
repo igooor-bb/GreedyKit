@@ -23,6 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Danger
-        uses: docker://ghcr.io/danger/danger-swift-with-swiftlint:3.12.3
+        uses: docker://ghcr.io/danger/danger-swift-with-swiftlint:3.15.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

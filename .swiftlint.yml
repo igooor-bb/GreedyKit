@@ -18,6 +18,7 @@ opt_in_rules:
   - comment_spacing
   - force_unwrapping
   - sorted_imports
+  - void_function_in_ternary
 
 line_length: 120
 warning_threshold: 3
