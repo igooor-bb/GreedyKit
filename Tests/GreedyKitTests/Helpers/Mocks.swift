@@ -13,7 +13,8 @@ import UIKit
 
 // MARK: - VideoRenderer
 
-actor MockVideoRenderer: VideoRendererProtocol {
+@MainActor
+final class MockVideoRenderer: VideoRendererProtocol {
     private(set) var attached: AVPlayerItem?
     private(set) var calls: [CMTime] = []
 

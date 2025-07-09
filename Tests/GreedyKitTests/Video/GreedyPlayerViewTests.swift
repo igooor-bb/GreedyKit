@@ -44,13 +44,13 @@ import UIKit
         let player = TestUtils.makePlayer()
 
         sut.player = player
-        try await Task.sleep(milliseconds: 100)
 
+        await Task.yield()
         try #require(await renderActor.attached === player.currentItem)
         #expect(producedLinks.isEmpty)
 
         window.addSubview(sut)
-        try await Task.sleep(milliseconds: 100)
+        await Task.yield()
 
         #expect(producedLinks.count == 1)
         #expect(producedLinks[0].isPaused == false)
@@ -76,13 +76,12 @@ import UIKit
         sut.player = TestUtils.makePlayer()
         window.addSubview(sut)
 
-        try await Task.sleep(milliseconds: 100)
+        await Task.yield()
         let link = try #require(producedLinks.first)
-
         link.isPaused = false
         link.fire()
-        try await Task.sleep(milliseconds: 50)
 
+        await Task.yield()
         #expect(await renderActor.calls.count == 1)
     }
 
@@ -90,11 +89,11 @@ import UIKit
     func testPauseAndInvalidateOnWindowRemoval() async throws {
         window.addSubview(sut)
 
-        try await Task.sleep(milliseconds: 20)
+        await Task.yield()
         let firstLink = try #require(producedLinks.first)
 
         sut.removeFromSuperview()
-        try await Task.sleep(milliseconds: 20)
+        await Task.yield()
 
         #expect(firstLink.isInvalidated == true)
         #expect(sut.window == nil)
@@ -104,15 +103,15 @@ import UIKit
     func testReaddingCreatesNewDisplayLink() async throws {
         window.addSubview(sut)
 
-        try await Task.sleep(milliseconds: 20)
+        await Task.yield()
         let link1 = try #require(producedLinks.first)
 
         sut.removeFromSuperview()
-        try await Task.sleep(milliseconds: 20)
+        await Task.yield()
         #expect(link1.isInvalidated)
 
         window.addSubview(sut)
-        try await Task.sleep(milliseconds: 20)
+        await Task.yield()
 
         #expect(producedLinks.count == 2)
         #expect(producedLinks.last !== link1)
@@ -123,13 +122,13 @@ import UIKit
         sut.player = TestUtils.makePlayer()
         window.addSubview(sut)
 
-        try await Task.sleep(milliseconds: 50)
+        await Task.yield()
 
         let link = try #require(producedLinks.last)
         link.isPaused = false
 
         sut.player = nil
-        try await Task.sleep(milliseconds: 20)
+        await Task.yield()
 
         #expect(link.isPaused == true)
     }
@@ -140,13 +139,13 @@ import UIKit
         sut.player = player
         window.addSubview(sut)
 
-        try await Task.sleep(milliseconds: 100)
+        await Task.yield()
         #expect(await renderActor.attached === player.currentItem)
 
         let newItem = TestUtils.makePlayerItem()
         player.replaceCurrentItem(with: newItem)
 
-        try await Task.sleep(milliseconds: 100)
+        await Task.yield()
         #expect(await renderActor.attached === newItem)
     }
 

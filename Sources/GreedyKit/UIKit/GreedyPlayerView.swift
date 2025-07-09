@@ -129,10 +129,10 @@ public final class GreedyPlayerView: UIView {
     }
 
     private func attachAndResumeIfNeeded(_ item: AVPlayerItem) async {
-        await renderer.attach(to: item)
         if window != nil {
             displayLink?.isPaused = false
         }
+        await renderer.attach(to: item)
     }
 
     private func addPlayerItemObserver() {
