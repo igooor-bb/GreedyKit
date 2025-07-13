@@ -8,7 +8,7 @@
 import CoreGraphics
 import CoreImage
 
-final actor CoreGraphicsRenderer {
+final class CoreGraphicsRenderer: CoreGraphicsRendererProtocol {
     private let context: CIContext
 
     init(

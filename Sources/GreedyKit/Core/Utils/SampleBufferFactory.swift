@@ -10,7 +10,7 @@ import CoreGraphics
 import CoreImage
 import CoreVideo
 
-final actor SampleBufferFactory {
+final actor SampleBufferFactory: SampleBufferFactoryProtocol {
 
     // MARK: Constants
 
