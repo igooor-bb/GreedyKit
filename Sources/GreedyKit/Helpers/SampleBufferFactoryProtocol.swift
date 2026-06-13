@@ -25,8 +25,8 @@ protocol SampleBufferFactoryProtocol: Actor {
 extension SampleBufferFactoryProtocol {
     func sampleBuffer(
         fromPixelBuffer pixelBuffer: CVPixelBuffer,
-        presentationTimeStamp time: CMTime = .invalid,
-        duration: CMTime = .zero
+        presentationTimeStamp time: CMTime = .zero,
+        duration: CMTime = .invalid
     ) async -> CMSampleBuffer? {
         await sampleBuffer(
             fromPixelBuffer: pixelBuffer,
@@ -37,8 +37,8 @@ extension SampleBufferFactoryProtocol {
 
     func sampleBuffer(
         fromCGImage cgImage: CGImage,
-        presentationTimeStamp time: CMTime = .invalid,
-        duration: CMTime = .zero
+        presentationTimeStamp time: CMTime = .zero,
+        duration: CMTime = .invalid
     ) async -> CMSampleBuffer? {
         await sampleBuffer(
             fromCGImage: cgImage,

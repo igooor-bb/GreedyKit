@@ -57,7 +57,7 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
             return nil
         }
         let timingInfo = CMSampleTimingInfo(
-            duration: .invalid,
+            duration: duration,
             presentationTimeStamp: time,
             decodeTimeStamp: .invalid
         )
@@ -107,7 +107,8 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
 
         return await sampleBuffer(
             fromPixelBuffer: pixelBuffer,
-            presentationTimeStamp: time
+            presentationTimeStamp: time,
+            duration: duration
         )
     }
 
