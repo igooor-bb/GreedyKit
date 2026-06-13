@@ -46,7 +46,7 @@ import UIKit
         sut.player = player
 
         await Task.yield()
-        try #require(await renderActor.attached === player.currentItem)
+        try #require(renderActor.attached === player.currentItem)
         #expect(producedLinks.isEmpty)
 
         window.addSubview(sut)
@@ -82,7 +82,7 @@ import UIKit
         link.fire()
 
         await Task.yield()
-        #expect(await renderActor.calls.count == 1)
+        #expect(renderActor.calls.count == 1)
     }
 
     @Test("Removal from window pauses and releases link")
@@ -131,6 +131,41 @@ import UIKit
         await Task.yield()
 
         #expect(link.isPaused == true)
+        #expect(renderActor.detachCount == 1)
+    }
+
+    @Test("Setting same player does not create duplicate attachments")
+    func testSamePlayerAssignmentDoesNotReattach() async throws {
+        let player = TestUtils.makePlayer()
+
+        sut.player = player
+        await Task.yield()
+
+        #expect(renderActor.attachedItems.count == 1)
+
+        sut.player = player
+        await Task.yield()
+
+        #expect(renderActor.attachedItems.count == 1)
+    }
+
+    @Test("Setting player to nil cancels old player item observation")
+    func testPlayerNilCancelsOldItemObservation() async throws {
+        let player = TestUtils.makePlayer()
+
+        sut.player = player
+        await Task.yield()
+        #expect(renderActor.attachedItems.count == 1)
+
+        sut.player = nil
+        await Task.yield()
+
+        let newItem = TestUtils.makePlayerItem()
+        player.replaceCurrentItem(with: newItem)
+        await Task.yield()
+
+        #expect(renderActor.attachedItems.count == 1)
+        #expect(renderActor.attached !== newItem)
     }
 
     @Test("Changing player.currentItem triggers re-attach")
@@ -140,13 +175,13 @@ import UIKit
         window.addSubview(sut)
 
         await Task.yield()
-        #expect(await renderActor.attached === player.currentItem)
+        #expect(renderActor.attached === player.currentItem)
 
         let newItem = TestUtils.makePlayerItem()
         player.replaceCurrentItem(with: newItem)
 
         await Task.yield()
-        #expect(await renderActor.attached === newItem)
+        #expect(renderActor.attached === newItem)
     }
 
     @Test("View is deallocated when no strong references remain")

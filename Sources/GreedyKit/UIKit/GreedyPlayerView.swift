@@ -16,6 +16,7 @@ import UIKit
 /// remain invisible in captured media.
 ///
 /// The default configuration plays the video normally.
+@MainActor
 public final class GreedyPlayerView: UIView {
 
     // MARK: - Public API
@@ -28,7 +29,10 @@ public final class GreedyPlayerView: UIView {
     ///
     /// Assigning a new player replaces any previously set player.
     public var player: AVPlayer? {
-        didSet { addPlayerItemObserver() }
+        didSet {
+            guard oldValue !== player else { return }
+            addPlayerItemObserver()
+        }
     }
 
     /// Indicates whether the view should hide its contents
@@ -59,6 +63,7 @@ public final class GreedyPlayerView: UIView {
 
     private let displayLinkFactory: DisplayLinkFactory
     private var playerItemObserver: AnyCancellable?
+    private var playerObservationID = UUID()
 
     // MARK: - Lifecycle
 
@@ -128,7 +133,19 @@ public final class GreedyPlayerView: UIView {
         }
     }
 
-    private func attachAndResumeIfNeeded(_ item: AVPlayerItem) async {
+    private func attachAndResumeIfNeeded(
+        _ item: AVPlayerItem,
+        for observedPlayer: AVPlayer?,
+        observationID: UUID
+    ) async {
+        guard
+            observationID == playerObservationID,
+            player === observedPlayer,
+            player?.currentItem === item
+        else {
+            return
+        }
+
         if window != nil {
             displayLink?.isPaused = false
         }
@@ -136,16 +153,53 @@ public final class GreedyPlayerView: UIView {
     }
 
     private func addPlayerItemObserver() {
+        let observationID = nextPlayerObservationID()
+
         guard let player else {
             displayLink?.isPaused = true
+            detachRenderer(for: observationID)
             return
         }
 
         playerItemObserver = player.publisher(for: \.currentItem)
-            .compactMap { $0 }
-            .sink { [weak self] item in
+            .sink { [weak self, weak player] item in
                 guard let self else { return }
-                Task { await attachAndResumeIfNeeded(item) }
+
+                guard let item else {
+                    displayLink?.isPaused = true
+                    detachRenderer(for: observationID)
+                    return
+                }
+
+                Task { [weak self, weak player, item] in
+                    await self?.attachAndResumeIfNeeded(
+                        item,
+                        for: player,
+                        observationID: observationID
+                    )
+                }
             }
+    }
+
+    private func detachRenderer(for observationID: UUID) {
+        Task { [weak self] in
+            guard
+                let self,
+                observationID == playerObservationID
+            else {
+                return
+            }
+
+            await renderer.detach()
+        }
+    }
+
+    private func nextPlayerObservationID() -> UUID {
+        playerItemObserver?.cancel()
+        playerItemObserver = nil
+
+        let id = UUID()
+        playerObservationID = id
+        return id
     }
 }

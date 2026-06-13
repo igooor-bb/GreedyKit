@@ -17,10 +17,18 @@ import UIKit
 @MainActor
 final class MockVideoRenderer: VideoRendererProtocol {
     private(set) var attached: AVPlayerItem?
+    private(set) var attachedItems: [AVPlayerItem] = []
+    private(set) var detachCount = 0
     private(set) var calls: [CMTime] = []
 
     func attach(to item: AVPlayerItem) async {
         attached = item
+        attachedItems.append(item)
+    }
+
+    func detach() async {
+        detachCount += 1
+        attached = nil
     }
 
     func frame(at time: CMTime) async -> CMSampleBuffer? {

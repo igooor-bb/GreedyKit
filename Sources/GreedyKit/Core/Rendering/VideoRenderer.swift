@@ -16,13 +16,23 @@ final actor VideoRenderer: VideoRendererProtocol {
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
         ]
     )
+    private var attachedItem: AVPlayerItem?
 
     init() {}
 
     func attach(to item: AVPlayerItem) async {
-        await MainActor.run { [videoOutput] in
-            item.add(videoOutput)
-        }
+        guard attachedItem !== item else { return }
+
+        attachedItem?.remove(videoOutput)
+        item.add(videoOutput)
+        attachedItem = item
+    }
+
+    func detach() async {
+        guard let attachedItem else { return }
+
+        attachedItem.remove(videoOutput)
+        self.attachedItem = nil
     }
 
     func frame(at time: CMTime) async -> CMSampleBuffer? {

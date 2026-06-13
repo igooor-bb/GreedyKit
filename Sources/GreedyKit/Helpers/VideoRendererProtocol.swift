@@ -9,5 +9,6 @@ import AVFoundation
 
 protocol VideoRendererProtocol: Sendable {
     func attach(to item: AVPlayerItem) async
+    func detach() async
     func frame(at time: CMTime) async -> CMSampleBuffer?
 }
