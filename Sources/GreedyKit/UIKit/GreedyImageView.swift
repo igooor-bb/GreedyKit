@@ -6,7 +6,6 @@
 //
 
 import AVFoundation
-import CoreImage
 import UIKit
 
 /// A view that displays an image and can optionally prevent it from
@@ -56,7 +55,6 @@ public final class GreedyImageView: UIView {
 
     private let renderView: RenderViewProtocol
     private let sampleBufferFactory: SampleBufferFactoryProtocol
-    private let renderer: CoreGraphicsRendererProtocol
     private var imageRenderTask: Task<Void, Never>?
     private var imageRenderGeneration = 0
 
@@ -65,11 +63,9 @@ public final class GreedyImageView: UIView {
     init(
         frame: CGRect = .zero,
         renderView: RenderViewProtocol,
-        renderer: CoreGraphicsRendererProtocol,
         sampleBufferFactory: SampleBufferFactoryProtocol
     ) {
         self.renderView = renderView
-        self.renderer = renderer
         self.sampleBufferFactory = sampleBufferFactory
 
         super.init(frame: frame)
@@ -79,7 +75,6 @@ public final class GreedyImageView: UIView {
         self.init(
             frame: frame,
             renderView: BackedRenderView(),
-            renderer: CoreGraphicsRenderer(debugName: "GreedyImageView"),
             sampleBufferFactory: SampleBufferFactory()
         )
 

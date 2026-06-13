@@ -17,7 +17,6 @@ import UIKit
 
     private lazy var sut = GreedyImageView(
         renderView: renderView,
-        renderer: MockCoreGraphicsRenderer(),
         sampleBufferFactory: sampleBufferFactory
     )
 

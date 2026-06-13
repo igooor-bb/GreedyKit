@@ -6,8 +6,8 @@
 //
 
 import AVFoundation
+import CoreGraphics
 import CoreMedia
-import CoreImage
 import UIKit
 
 @testable import GreedyKit
@@ -130,12 +130,6 @@ actor MockSampleBufferFactory: SampleBufferFactoryProtocol {
         let waiters = requestWaiters
         requestWaiters.removeAll()
         waiters.forEach { $0.resume() }
-    }
-}
-
-final class MockCoreGraphicsRenderer: CoreGraphicsRendererProtocol {
-    func cgImage(from ciImage: CIImage) async -> CGImage? {
-        nil
     }
 }
 
