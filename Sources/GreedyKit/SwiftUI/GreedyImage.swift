@@ -58,6 +58,7 @@ public struct GreedyImage: UIViewRepresentable {
     }
 
     public func updateUIView(_ uiView: GreedyImageView, context: Context) {
+        uiView.image = image
         uiView.preventsCapture = preventsCapture
         uiView.contentGravity = contentGravity
     }

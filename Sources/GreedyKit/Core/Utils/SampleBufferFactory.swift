@@ -50,7 +50,7 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
         fromPixelBuffer pixelBuffer: CVPixelBuffer,
         presentationTimeStamp time: CMTime = .zero,
         duration: CMTime = .invalid
-    ) -> CMSampleBuffer? {
+    ) async -> CMSampleBuffer? {
         guard let formatDescription = try? CMVideoFormatDescription(
             imageBuffer: pixelBuffer
         ) else {
@@ -73,7 +73,7 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
         fromCGImage cgImage: CGImage,
         presentationTimeStamp time: CMTime = .zero,
         duration: CMTime = .invalid
-    ) -> CMSampleBuffer? {
+    ) async -> CMSampleBuffer? {
         resizePoolIfNeeded(width: cgImage.width, height: cgImage.height)
         guard let pixelBufferPool else {
             return nil
@@ -105,7 +105,7 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
             colorSpace: CGColorSpaceCreateDeviceRGB()
         )
 
-        return sampleBuffer(
+        return await sampleBuffer(
             fromPixelBuffer: pixelBuffer,
             presentationTimeStamp: time
         )

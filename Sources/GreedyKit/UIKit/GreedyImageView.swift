@@ -16,6 +16,7 @@ import UIKit
 /// should remain hidden in captured media.
 ///
 /// The default configuration shows the image normally.
+@MainActor
 public final class GreedyImageView: UIView {
 
     // MARK: - Public API
@@ -26,6 +27,8 @@ public final class GreedyImageView: UIView {
     /// Set this property to `nil` to clear the current content.
     public var image: UIImage? {
         didSet {
+            guard oldValue !== image else { return }
+
             if let image {
                 setImage(image)
             } else {
@@ -54,6 +57,8 @@ public final class GreedyImageView: UIView {
     private let renderView: RenderViewProtocol
     private let sampleBufferFactory: SampleBufferFactoryProtocol
     private let renderer: CoreGraphicsRendererProtocol
+    private var imageRenderTask: Task<Void, Never>?
+    private var imageRenderGeneration = 0
 
     // MARK: - Lifecycle
 
@@ -85,29 +90,65 @@ public final class GreedyImageView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        imageRenderTask?.cancel()
+    }
+
     // MARK: - Private Methods
 
     private func setImage(_ uiImage: UIImage) {
-        Task {
-            if let cgImage = uiImage.cgImage {
-                await enqueueBuffer(from: cgImage)
+        let generation = nextImageRenderGeneration()
+        guard let cgImage = uiImage.cgImage else {
+            clearImage(for: generation)
+            return
+        }
+
+        let sampleBufferFactory = sampleBufferFactory
+        imageRenderTask = Task { [weak self, sampleBufferFactory] in
+            guard let buffer = await sampleBufferFactory.sampleBuffer(
+                fromCGImage: cgImage,
+                presentationTimeStamp: .zero
+            ) else {
+                return
             }
+
+            await self?.enqueueBuffer(buffer, for: generation)
         }
     }
 
     private func removeImage() {
-        Task {
+        let generation = nextImageRenderGeneration()
+        clearImage(for: generation)
+    }
+
+    private func clearImage(for generation: Int) {
+        imageRenderTask = Task { [weak self] in
+            guard
+                let self,
+                !Task.isCancelled,
+                generation == imageRenderGeneration
+            else {
+                return
+            }
+
             await renderView.clearLayer()
         }
     }
 
-    private func enqueueBuffer(from cgImage: CGImage) async {
-        guard let buffer = await sampleBufferFactory.sampleBuffer(
-            fromCGImage: cgImage,
-            presentationTimeStamp: .zero
-        ) else {
+    private func enqueueBuffer(_ buffer: CMSampleBuffer, for generation: Int) async {
+        guard
+            !Task.isCancelled,
+            generation == imageRenderGeneration
+        else {
             return
         }
+
         await renderView.enqueueBuffer(buffer)
+    }
+
+    private func nextImageRenderGeneration() -> Int {
+        imageRenderGeneration += 1
+        imageRenderTask?.cancel()
+        return imageRenderGeneration
     }
 }
