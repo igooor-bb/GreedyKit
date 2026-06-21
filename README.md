@@ -26,7 +26,7 @@ GreedyKit packages this technique, allowing you to protect media with a single p
 ## Requirements
 
 - iOS/iPadOS 13.0 and later
-- Xcode 16.0 and later
+- Xcode 26.0 and later
 
 ## Installation
 
