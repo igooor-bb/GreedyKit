@@ -157,7 +157,7 @@ public final class GreedyPlayerView: UIView {
 
         guard let player else {
             displayLink?.isPaused = true
-            detachRenderer(for: observationID)
+            detachRenderer(for: nil, observationID: observationID)
             return
         }
 
@@ -167,7 +167,7 @@ public final class GreedyPlayerView: UIView {
 
                 guard let item else {
                     displayLink?.isPaused = true
-                    detachRenderer(for: observationID)
+                    detachRenderer(for: player, observationID: observationID)
                     return
                 }
 
@@ -181,17 +181,29 @@ public final class GreedyPlayerView: UIView {
             }
     }
 
-    private func detachRenderer(for observationID: UUID) {
-        Task { [weak self] in
+    private func detachRenderer(
+        for observedPlayer: AVPlayer?,
+        observationID: UUID
+    ) {
+        Task { [weak self, observedPlayer] in
             guard
                 let self,
-                observationID == playerObservationID
+                observationID == playerObservationID,
+                shouldDetachRenderer(for: observedPlayer)
             else {
                 return
             }
 
             await renderer.detach()
         }
+    }
+
+    private func shouldDetachRenderer(for observedPlayer: AVPlayer?) -> Bool {
+        guard let observedPlayer else {
+            return player == nil
+        }
+
+        return player === observedPlayer && player?.currentItem == nil
     }
 
     private func nextPlayerObservationID() -> UUID {

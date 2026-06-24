@@ -21,7 +21,7 @@ import UIKit
     )
 
     @Test("Setting image to nil clears layer and cancels pending render")
-    func settingImageToNilCancelsPendingRender() async throws {
+    func testSettingImageToNilCancelsPendingRender() async throws {
         sut.image = TestUtils.makeImage()
 
         try await waitForPendingImageRequest()
@@ -35,6 +35,28 @@ import UIKit
         await Task.yield()
 
         #expect(renderView.buffers.isEmpty)
+    }
+
+    @Test("Failed image render clears layer")
+    func testFailedImageRenderClearsLayer() async {
+        let renderView = MockRenderView()
+        let sampleBufferFactory = MockSampleBufferFactory(queuedBuffers: [nil])
+        let sut = GreedyImageView(
+            renderView: renderView,
+            sampleBufferFactory: sampleBufferFactory
+        )
+
+        sut.image = TestUtils.makeImage()
+        await drainImageRenderTask()
+
+        #expect(renderView.clearCount == 1)
+        #expect(renderView.buffers.isEmpty)
+    }
+
+    private func drainImageRenderTask() async {
+        for _ in 0..<3 {
+            await Task.yield()
+        }
     }
 
     private func waitForPendingImageRequest() async throws {

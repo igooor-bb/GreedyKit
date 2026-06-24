@@ -52,7 +52,7 @@ final actor VideoRenderer: VideoRendererProtocol {
 
         return await sampleBufferFactory.sampleBuffer(
             fromPixelBuffer: pixelBuffer,
-            presentationTimeStamp: time
+            presentationTimeStamp: displayTime
         )
     }
 }

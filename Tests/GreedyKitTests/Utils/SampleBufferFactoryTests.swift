@@ -46,6 +46,19 @@ import Testing
         #expect(sampleBuffer.duration == duration)
     }
 
+    @Test("CGImage sample uses source image dimensions")
+    func testCGImageSampleUsesSourceImageDimensions() async throws {
+        let sut = SampleBufferFactory()
+
+        let sampleBuffer = try #require(await sut.sampleBuffer(
+            fromCGImage: makeCGImage(width: 37, height: 19)
+        ))
+        let imageBuffer = try #require(CMSampleBufferGetImageBuffer(sampleBuffer))
+
+        #expect(CVPixelBufferGetWidth(imageBuffer) == 37)
+        #expect(CVPixelBufferGetHeight(imageBuffer) == 19)
+    }
+
     private func makePixelBuffer() throws -> CVPixelBuffer {
         var pixelBuffer: CVPixelBuffer?
         CVPixelBufferCreate(
@@ -60,22 +73,28 @@ import Testing
         return try #require(pixelBuffer)
     }
 
-    private func makeCGImage() throws -> CGImage {
+    private func makeCGImage(width: Int = 1, height: Int = 1) throws -> CGImage {
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo.byteOrder32Little.rawValue
                        | CGImageAlphaInfo.premultipliedFirst.rawValue
-        var pixel: UInt32 = 0xFFFF0000
+        var pixels = Array(repeating: UInt32(0xFFFF0000), count: width * height)
 
-        let context = try #require(CGContext(
-            data: &pixel,
-            width: 1,
-            height: 1,
-            bitsPerComponent: 8,
-            bytesPerRow: 4,
-            space: colorSpace,
-            bitmapInfo: bitmapInfo
-        ))
+        let image: CGImage? = pixels.withUnsafeMutableBytes { buffer in
+            guard let context = CGContext(
+                data: buffer.baseAddress,
+                width: width,
+                height: height,
+                bitsPerComponent: 8,
+                bytesPerRow: width * 4,
+                space: colorSpace,
+                bitmapInfo: bitmapInfo
+            ) else {
+                return nil
+            }
 
-        return try #require(context.makeImage())
+            return context.makeImage()
+        }
+
+        return try #require(image)
     }
 }

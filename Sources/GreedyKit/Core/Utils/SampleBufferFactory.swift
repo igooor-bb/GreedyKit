@@ -15,25 +15,17 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
     // MARK: Constants
 
     private static let pixelFormat = kCVPixelFormatType_32BGRA
-    private static let bitmapInfo = CGBitmapInfo.byteOrder32Little.rawValue
-                                  | CGImageAlphaInfo.premultipliedFirst.rawValue
 
     // MARK: Properties
 
     private var pixelBufferPool: CVPixelBufferPool?
+    private var poolGeometry: BufferPoolGeometry?
     private let context: CIContext
 
-    private var poolGeometry: BufferPoolGeometry
     private let minPoolBuffers: Int
 
-    init(
-        maxWidth: Int = 1920,
-        maxHeight: Int = 1080,
-        minPoolBuffers: Int = 4
-    ) {
+    init(minPoolBuffers: Int = 4) {
         self.minPoolBuffers = minPoolBuffers
-        self.poolGeometry = BufferPoolGeometry(width: maxWidth, height: maxHeight)
-        self.pixelBufferPool = Self.makePool(geometry: poolGeometry, minBuffers: minPoolBuffers)
 
         guard let device = MTLCreateSystemDefaultDevice() else {
             fatalError("GPU is unavailable on this device")
@@ -74,22 +66,8 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
         presentationTimeStamp time: CMTime = .zero,
         duration: CMTime = .invalid
     ) async -> CMSampleBuffer? {
-        resizePoolIfNeeded(width: cgImage.width, height: cgImage.height)
-        guard let pixelBufferPool else {
-            return nil
-        }
-
-        var pixelBuffer: CVPixelBuffer?
-        let status = CVPixelBufferPoolCreatePixelBuffer(
-            nil,
-            pixelBufferPool,
-            &pixelBuffer
-        )
-
-        guard
-            status == kCVReturnSuccess,
-            let pixelBuffer
-        else {
+        let geometry = BufferPoolGeometry(width: cgImage.width, height: cgImage.height)
+        guard let pixelBuffer = makePixelBuffer(geometry: geometry) else {
             return nil
         }
 
@@ -97,12 +75,12 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
         defer { CVPixelBufferUnlockBaseAddress(pixelBuffer, []) }
 
         let ciImage = CIImage(cgImage: cgImage)
-        let size = CGRect(x: 0, y: 0, width: cgImage.width, height: cgImage.height)
+        let bounds = CGRect(x: 0, y: 0, width: geometry.width, height: geometry.height)
         context.render(
             ciImage,
             to: pixelBuffer,
-            bounds: size,
-            colorSpace: CGColorSpaceCreateDeviceRGB()
+            bounds: bounds,
+            colorSpace: cgImage.colorSpace ?? CGColorSpaceCreateDeviceRGB()
         )
 
         return await sampleBuffer(
@@ -114,12 +92,37 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
 
     // MARK: Helpers
 
-    private func resizePoolIfNeeded(width: Int, height: Int) {
-        guard width > poolGeometry.width || height > poolGeometry.height else { return }
+    private func makePixelBuffer(geometry: BufferPoolGeometry) -> CVPixelBuffer? {
+        guard let pixelBufferPool = pixelBufferPool(for: geometry) else {
+            return nil
+        }
 
-        poolGeometry.width = max(width, poolGeometry.width).aligned64
-        poolGeometry.height = max(height, poolGeometry.height).aligned64
-        pixelBufferPool = Self.makePool(geometry: poolGeometry, minBuffers: minPoolBuffers)
+        var pixelBuffer: CVPixelBuffer?
+        let status = CVPixelBufferPoolCreatePixelBuffer(
+            nil,
+            pixelBufferPool,
+            &pixelBuffer
+        )
+
+        guard status == kCVReturnSuccess else {
+            return nil
+        }
+
+        return pixelBuffer
+    }
+
+    private func pixelBufferPool(for geometry: BufferPoolGeometry) -> CVPixelBufferPool? {
+        if poolGeometry == geometry, let pool = pixelBufferPool {
+            return pool
+        }
+
+        guard let pool = Self.makePool(geometry: geometry, minBuffers: minPoolBuffers) else {
+            return nil
+        }
+
+        pixelBufferPool = pool
+        poolGeometry = geometry
+        return pool
     }
 
     private static func makePool(
@@ -130,7 +133,6 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
             kCVPixelBufferPixelFormatTypeKey as String: pixelFormat,
             kCVPixelBufferWidthKey as String: geometry.width,
             kCVPixelBufferHeightKey as String: geometry.height,
-            kCVPixelBufferBytesPerRowAlignmentKey as String: geometry.width * 4,
             kCVPixelBufferIOSurfacePropertiesKey as String: [:]
         ]
         let poolAttributes: [String: Any] = [
@@ -148,13 +150,7 @@ final actor SampleBufferFactory: SampleBufferFactoryProtocol {
     }
 }
 
-private struct BufferPoolGeometry {
+private struct BufferPoolGeometry: Hashable {
     var width: Int
     var height: Int
-}
-
-private extension Int {
-    var aligned64: Int {
-        (self + 63) & ~63
-    }
 }

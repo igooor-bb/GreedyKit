@@ -104,6 +104,7 @@ public final class GreedyImageView: UIView {
                 fromCGImage: cgImage,
                 presentationTimeStamp: .zero
             ) else {
+                await self?.clearLayerIfGenerationIsCurrent(generation)
                 return
             }
 
@@ -118,16 +119,19 @@ public final class GreedyImageView: UIView {
 
     private func clearImage(for generation: Int) {
         imageRenderTask = Task { [weak self] in
-            guard
-                let self,
-                !Task.isCancelled,
-                generation == imageRenderGeneration
-            else {
-                return
-            }
-
-            await renderView.clearLayer()
+            await self?.clearLayerIfGenerationIsCurrent(generation)
         }
+    }
+
+    private func clearLayerIfGenerationIsCurrent(_ generation: Int) async {
+        guard
+            !Task.isCancelled,
+            generation == imageRenderGeneration
+        else {
+            return
+        }
+
+        await renderView.clearLayer()
     }
 
     private func enqueueBuffer(_ buffer: CMSampleBuffer, for generation: Int) async {

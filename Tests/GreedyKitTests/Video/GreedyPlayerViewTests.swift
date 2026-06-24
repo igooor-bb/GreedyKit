@@ -184,8 +184,27 @@ import UIKit
         #expect(renderActor.attached === newItem)
     }
 
+    @Test("Stale nil currentItem event does not detach replacement item")
+    func testStaleNilCurrentItemDoesNotDetachReplacementItem() async throws {
+        let player = TestUtils.makePlayer()
+        sut.player = player
+
+        await Task.yield()
+        #expect(renderActor.attachedItems.count == 1)
+
+        player.replaceCurrentItem(with: nil)
+        let newItem = TestUtils.makePlayerItem()
+        player.replaceCurrentItem(with: newItem)
+
+        await Task.yield()
+        await Task.yield()
+
+        #expect(renderActor.detachCount == 0)
+        #expect(renderActor.attached === newItem)
+    }
+
     @Test("View is deallocated when no strong references remain")
-    func playerViewIsDeallocatedWhenOrphan() throws {
+    func testPlayerViewIsDeallocatedWhenOrphan() throws {
         weak var weakRef: GreedyPlayerView?
 
         autoreleasepool {
@@ -201,7 +220,7 @@ import UIKit
     }
 
     @Test("View is deallocated when removed from superview")
-    func playerViewIsDeallocatedWhenRemovedFromSuperview() throws {
+    func testPlayerViewIsDeallocatedWhenRemovedFromSuperview() throws {
         let container = UIView()
         weak var weakRef: GreedyPlayerView?
 
