@@ -1,6 +1,10 @@
+# CocoaPods trunk publishing is discontinued. This podspec is kept as a
+# compatibility manifest for projects that still resolve GreedyKit through
+# CocoaPods from Git tags or local paths.
+
 Pod::Spec.new do |s|
   s.name = 'GreedyKit'
-  s.version = ENV['LIB_VERSION'] || '0.1.0'
+  s.version = '2.0.1'
   s.summary = 'Components written in Swift for preventing sensitive media data to be captured'
   s.description = 'GreedyKit is a set of ready-to-use components written in Swift for preventing sensitive media data to be exposed by screen capture tools in iOS.'
 
