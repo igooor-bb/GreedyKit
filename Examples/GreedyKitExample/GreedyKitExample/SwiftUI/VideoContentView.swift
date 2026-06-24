@@ -6,6 +6,7 @@
 //
 
 import AVFoundation
+import Combine
 import GreedyKit
 import SwiftUI
 
@@ -37,20 +38,34 @@ struct VideoContentView: View {
                 Text("Protection is " + (preventsCapture ? "ON" : "OFF"))
             }
         }
-        .onAppear {
-            player.replaceCurrentItem(with: playerItem)
-            player.seek(to: .zero)
-            player.play()
+        .onAppear(perform: startVideo)
+        .onReceive(
+            NotificationCenter.default.publisher(
+                for: .AVPlayerItemDidPlayToEndTime,
+                object: playerItem
+            )
+        ) { _ in
+            restartVideo()
         }
-        .onDisappear {
-            player.replaceCurrentItem(with: nil)
-        }
+        .onDisappear(perform: stopVideo)
         .padding(16)
+    }
+
+    private func startVideo() {
+        player.replaceCurrentItem(with: playerItem)
+        restartVideo()
+    }
+
+    private func restartVideo() {
+        player.seek(to: .zero)
+        player.play()
+    }
+
+    private func stopVideo() {
+        player.replaceCurrentItem(with: nil)
     }
 }
 
-struct VideoContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        VideoContentView()
-    }
+#Preview {
+    VideoContentView()
 }
