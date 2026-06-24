@@ -1,5 +1,10 @@
 # GreedyKit
 
+[![Build and Test](https://img.shields.io/github/actions/workflow/status/igooor-bb/GreedyKit/swift-build.yml?branch=main&label=build%20%26%20tests)](https://github.com/igooor-bb/GreedyKit/actions/workflows/swift-build.yml)
+![Swift](https://img.shields.io/badge/Swift-6.0-orange)
+![iOS](https://img.shields.io/badge/iOS-13.0%2B-lightgrey)
+[![License](https://img.shields.io/github/license/igooor-bb/GreedyKit)](LICENSE)
+
 GreedyKit is a set of ready-to-use UIKit and SwiftUI components to prevent sensitive media data, such as images or videos, from being exposed by screen capture tools on iOS.
 
 ## Contents
@@ -14,6 +19,7 @@ GreedyKit is a set of ready-to-use UIKit and SwiftUI components to prevent sensi
 - [Usage](#usage)
   - [Image](#image)
   - [Video](#video)
+- [Limitations](#limitations)
 - [Contribution](#contribution)
 - [License](#license)
 
@@ -26,7 +32,8 @@ GreedyKit packages this technique, allowing you to protect media with a single p
 ## Requirements
 
 - iOS/iPadOS 13.0 and later
-- Xcode 26.0 and later
+- Swift 6.0 and later
+- Xcode 16.0 and later
 
 ## Installation
 
@@ -61,6 +68,14 @@ The package includes components for displaying images and videos that can change
 
 You can find an example of how to use them in [Examples/GreedyKitExample](Examples/GreedyKitExample/).
 
+By default, media keeps its aspect ratio and remains fully visible inside the view. For layouts that need edge-to-edge protected content, set `contentGravity` explicitly:
+
+```swift
+GreedyPlayer(avPlayer, preventsCapture: true, contentGravity: .fill)
+```
+
+UIKit views expose the same option as a mutable property.
+
 ### Image
 
 In UIKit, you can use the `GreedyImageView` wrapper around your `UIImage` similar to regular `UIImageView`:
@@ -73,7 +88,7 @@ imageView.image = UIImage(named: "SecretImage")
 imageView.preventsCapture = true
 ```
 
-In SwiftUI, you can simply use `GreedyImage` compononent with your `UIImage` inside:
+In SwiftUI, you can simply use `GreedyImage` component with your `UIImage` inside:
 
 ```swift
 VStack {
@@ -101,9 +116,15 @@ In SwiftUI, you just need to create a `GreedyPlayer` within your view hierarchy 
 
 ```swift
 VStack {
-    GreedyPlayer(player: avPlayer, preventsCapture: true)
+    GreedyPlayer(avPlayer, preventsCapture: true)
 }
 ```
+
+## Limitations
+
+GreedyKit is not a DRM system and does not manage content licenses, keys, or streaming protection.
+
+Capture prevention behavior is provided by Apple's media rendering APIs and may differ between simulator and physical devices. Validate critical flows on real devices before shipping.
 
 ## Contribution
 
